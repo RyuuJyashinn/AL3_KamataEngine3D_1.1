@@ -30,7 +30,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//ケ-ムシ-ン更新
 	gameScene->Update();
     // 监测面板结束
-	imguiManager->End();
+	imguiManager->End( );
 	//更新结束
 	// 
 	// 描画开始
