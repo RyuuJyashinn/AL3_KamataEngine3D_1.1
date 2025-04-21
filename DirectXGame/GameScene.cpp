@@ -4,38 +4,29 @@
 
 using namespace KamataEngine;
 
-void GameScene::Initialize() { 
+void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	camera_.Initialize();
-	soundDateHandle_ = Audio::GetInstance()->LoadWave("mokugyo.wav");
-	Audio::GetInstance()->PlayWave(soundDateHandle_);
-
-	textureHandle_ = TextureManager::Load("uvChecker.png");
-	//delete sprite_;
 	model_ = Model::Create();
-	// delete model_;
-
 	PrimitiveDrawer::GetInstance()->SetCamera(&camera_);
+	textureHandle_ = TextureManager::Load("uvChecker.png");
 
-	debugCamera_ = new DebugCamera(1280,720);
-	// delete debugCamera_;
-	AxisIndicator::GetInstance()->SetVisible(true);
-	AxisIndicator::GetInstance()->SetTargetCamera(&debugCamera_->GetCamera());
+	player_ = new Player();
+	player_->Initialize(model_, textureHandle_, &camera_);
+
+
 }
 void GameScene::Update() { 
-	ImGui::Begin(" Debug.V1");
-	debugCamera_->Update();
-	ImGui::InputFloat3("InputFloat3",inputFloat3);
-	ImGui::SliderFloat3("InputFloat3", inputFloat3,0.0f,1.0f);
-	ImGui::Text("LIUJIACHEN %d %d",2050,12,31);
-	ImGui::ShowDemoWindow();
-	ImGui::End();
+	player_->Update();
+
 }
 
 void GameScene::Draw() { 
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	Model::PreDraw(dxCommon->GetCommandList());
-	model_->Draw(worldTransform_, debugCamera_->GetCamera(), textureHandle_);
+	
+	player_->Draw();
+
 	Model::PostDraw();
 
 
