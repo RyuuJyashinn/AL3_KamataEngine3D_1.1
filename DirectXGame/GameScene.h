@@ -1,6 +1,7 @@
 #pragma once
 #include"KamataEngine.h"
 #include"Player.h"
+#include<vector> 
 class GameScene {
 public:
 	KamataEngine::Sprite* sprite_ = nullptr;
@@ -16,6 +17,8 @@ public:
 	void Draw();
 
 private:
+	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;	
+    Model* modelBlock_ = nullptr;
 	uint32_t textureHandle_ = 0;
 	uint32_t soundDateHandle_ = 0;
 	Player* player_ = nullptr;

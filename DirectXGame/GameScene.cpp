@@ -1,31 +1,66 @@
 #include "GameScene.h"
 #include "KamataEngine.h"
-
+#include"MyMath.h"
 
 using namespace KamataEngine;
 
 void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	camera_.Initialize();
-	model_ = Model::Create();
+
+	modelBlock_ = Model::CreateFromOBJ("cube");
 	PrimitiveDrawer::GetInstance()->SetCamera(&camera_);
 	textureHandle_ = TextureManager::Load("uvChecker.png");
 
-	player_ = new Player();
-	player_->Initialize(model_, textureHandle_, &camera_);
+	
+	//box
+	const uint32_t kNumBlockHorizontal = 20;
+	const uint32_t kNumBlockVirtical = 10;
+	const float kBlockWidth = 2.0f;
+	const float kBlockHeight = 2.0f;
+	worldTransformBlocks_.resize( kNumBlockVirtical);
+	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
+	}
+	for (uint32_t y = 0; y < kNumBlockVirtical; ++y) {
+		for (uint32_t x = 0; x < kNumBlockHorizontal; ++x) {
+
+			worldTransformBlocks_[y][x] = new WorldTransform();
+			worldTransformBlocks_[y][x]->Initialize();
+			worldTransformBlocks_[y][x]->translation_.x = kBlockWidth * x;
+			worldTransformBlocks_[y][x]->translation_.y = kBlockHeight* y;
+		}
+	}
+	
 
 
 }
 void GameScene::Update() { 
-	player_->Update();
+
+
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+			if (!worldTransformBlock)
+				continue;
+
+			worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
+			worldTransformBlock->TransferMatrix();
+
+		}
+	}
+
 
 }
 
 void GameScene::Draw() { 
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	Model::PreDraw(dxCommon->GetCommandList());
-	
-	player_->Draw();
+
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+			modelBlock_->Draw(*worldTransformBlock, camera_);
+		}
+	}
 
 	Model::PostDraw();
 
