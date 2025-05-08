@@ -17,6 +17,7 @@ public:
 	void Draw();
 
 private:
+	bool isDebugCameraActive_ = false;
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;	
     Model* modelBlock_ = nullptr;
 	uint32_t textureHandle_ = 0;
