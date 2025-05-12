@@ -22,6 +22,9 @@
     <Filter Include="クラス\GameScene">
       <UniqueIdentifier>{ecedf8fd-0d23-481d-82b6-ee2a8e6e60db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="クラス\SkyDome">
+      <UniqueIdentifier>{88ca88db-5040-42aa-954f-edde4b51c1af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -35,6 +38,9 @@
     </ClCompile>
     <ClCompile Include="MyMath.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyDome.cpp">
+      <Filter>クラス\SkyDome</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="MyMath.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyDome.h">
+      <Filter>クラス\SkyDome</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
