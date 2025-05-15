@@ -34,7 +34,8 @@ void GameScene::Initialize() {
 		}
 	}
 	
-
+	skydome_ = new SkyDome();
+	skydome_->Initialize();
 
 }
 void GameScene::Update() { 
@@ -68,7 +69,7 @@ void GameScene::Update() {
 		}
 	}
 
-
+	skydome_->Update();
 }
 
 void GameScene::Draw() { 
@@ -83,6 +84,8 @@ void GameScene::Draw() {
 		}
 	}
 
+		skydome_->Draw(camera_);
+	
 	Model::PostDraw();
 
 

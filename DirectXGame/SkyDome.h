@@ -5,13 +5,13 @@ using namespace KamataEngine;
 class SkyDome {
 
 	public:
-	void Initialize(Model* model,  Camera* camera);
+	void Initialize();
 	void Update();
-	void Draw();
+	void Draw(const Camera& camera);
 
 	private:
 	WorldTransform worldTransForm_;
-	    Model* modelSkyDome_ = nullptr;
-	Camera* camera_ = nullptr;
+	Model* modelSkyDome_ = nullptr;
+
 	
 };

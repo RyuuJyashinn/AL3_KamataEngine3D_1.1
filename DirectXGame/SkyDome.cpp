@@ -1,15 +1,10 @@
 #include "SkyDome.h"
 using namespace KamataEngine;
 
-void SkyDome::Initialize(Model* model,  Camera* camera) { 
-	
-	assert(model);
-	modelSkyDome_= model;
-
+void SkyDome::Initialize() { 
 	worldTransForm_.Initialize();
+	modelSkyDome_ = Model::CreateFromOBJ("skydome", true);
 
-	camera_ = camera;
-	textureHandle_ = textureHandle;
 }
 
 void SkyDome::Update() {
@@ -18,6 +13,8 @@ void SkyDome::Update() {
 
 
 
-void SkyDome::Draw() { 
-
-	modelSkyDome_->Draw(worldTransForm_, *camera_); }
+void SkyDome::Draw(const Camera& camera) {
+	if (modelSkyDome_) {
+		modelSkyDome_->Draw(worldTransForm_, camera);
+	}
+}
