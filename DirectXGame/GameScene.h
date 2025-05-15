@@ -24,5 +24,6 @@ private:
 	uint32_t textureHandle_ = 0;
 	uint32_t soundDateHandle_ = 0;
 	Player* player_ = nullptr;
+	Model* modelPlayer_ = nullptr;
 	SkyDome* skydome_ = nullptr;
 };

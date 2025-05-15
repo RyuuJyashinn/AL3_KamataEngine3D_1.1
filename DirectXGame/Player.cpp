@@ -1,7 +1,7 @@
 #include"Player.h"
 using namespace KamataEngine;
 
-void Player::Initialize(Model* model, uint32_t textureHandle, Camera* camera) { 
+void Player::Initialize(Model* model, Camera* camera) { 
 	
 	assert(model);
 	model_ = model;
@@ -9,7 +9,6 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Camera* camera) {
 	worldTransform_.Initialize();
 
 	camera_ = camera;
-	textureHandle_ = textureHandle;
 
 }
 
@@ -19,9 +18,9 @@ void Player::Update() {
 }
 
 
-void Player::Draw() {
+void Player::Draw(const Camera& camera) {
 
-	model_->Draw(worldTransform_, *camera_, textureHandle_);
+	model_->Draw(worldTransform_, camera);
 
 }
 

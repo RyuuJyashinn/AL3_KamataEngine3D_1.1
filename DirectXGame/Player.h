@@ -4,9 +4,9 @@ using namespace KamataEngine;
 
 class Player {
 public:
-	void Initialize(Model* model, uint32_t textureHandle, Camera* camera);
+	void Initialize(Model* model, Camera* camera);
 	void Update();
-	void Draw();
+	void Draw(const Camera& camera);
 
 private:
 

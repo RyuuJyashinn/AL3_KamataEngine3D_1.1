@@ -8,9 +8,9 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	camera_.Initialize();
 
-	modelBlock_ = Model::CreateFromOBJ("cube");
+	modelBlock_ = Model::CreateFromOBJ("block");
 	PrimitiveDrawer::GetInstance()->SetCamera(&camera_);
-	textureHandle_ = TextureManager::Load("uvChecker.png");
+
 	//camera
 	debugCamera_ = new DebugCamera(1280, 720);
 	
@@ -30,12 +30,16 @@ void GameScene::Initialize() {
 			worldTransformBlocks_[y][x] = new WorldTransform();
 			worldTransformBlocks_[y][x]->Initialize();
 			worldTransformBlocks_[y][x]->translation_.x = kBlockWidth * x;
-			worldTransformBlocks_[y][x]->translation_.y = kBlockHeight* y;
+			worldTransformBlocks_[y][x]->translation_.y = kBlockHeight* y-1;
 		}
 	}
 	
 	skydome_ = new SkyDome();
 	skydome_->Initialize();
+
+    modelPlayer_ = Model::CreateFromOBJ("player");
+	player_ = new Player();
+	player_->Initialize(modelPlayer_, &camera_);
 
 }
 void GameScene::Update() { 
@@ -70,6 +74,7 @@ void GameScene::Update() {
 	}
 
 	skydome_->Update();
+	player_->Update();
 }
 
 void GameScene::Draw() { 
@@ -85,8 +90,9 @@ void GameScene::Draw() {
 	}
 
 		skydome_->Draw(camera_);
-	
-	Model::PostDraw();
+	    player_->Draw(camera_);
 
+	Model::PostDraw();
+	  
 
 }
