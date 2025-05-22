@@ -3,44 +3,49 @@
 #include"MyMath.h"
 
 using namespace KamataEngine;
-
 void GameScene::Initialize() {
+	// 初始化基础组件
 	worldTransform_.Initialize();
 	camera_.Initialize();
 
+	// 初始化模型资源
 	modelBlock_ = Model::CreateFromOBJ("block");
-	PrimitiveDrawer::GetInstance()->SetCamera(&camera_);
+	modelPlayer_ = Model::CreateFromOBJ("player");
 
-	//camera
-	debugCamera_ = new DebugCamera(1280, 720);
-	
-	//box
-	const uint32_t kNumBlockHorizontal = 20;
-	const uint32_t kNumBlockVirtical = 10;
-	const float kBlockWidth = 2.0f;
-	const float kBlockHeight = 2.0f;
-	worldTransformBlocks_.resize( kNumBlockVirtical);
+	// 初始化地图数据（必须先于方块初始化）
+	mapChipField_ = new MapChipField;
+	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+
+	// 初始化方块世界变换
+	const uint32_t kNumBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
+	const uint32_t kNumBlockVirtical = mapChipField_->GetNumBlockVirual();
+	worldTransformBlocks_.resize(kNumBlockVirtical);
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		worldTransformBlocks_[i].resize(kNumBlockHorizontal, nullptr); // 👈 明确初始化为nullptr
+		worldTransformBlocks_[i].resize(kNumBlockHorizontal, nullptr);
 	}
 
 	for (uint32_t y = 0; y < kNumBlockVirtical; ++y) {
-		for (uint32_t x = y%2; x < kNumBlockHorizontal; x+=2) {
-
-			worldTransformBlocks_[y][x] = new WorldTransform();
-			worldTransformBlocks_[y][x]->Initialize();
-			worldTransformBlocks_[y][x]->translation_.x = kBlockWidth * x;
-			worldTransformBlocks_[y][x]->translation_.y = kBlockHeight* y-1;
+		for (uint32_t x = y % 2; x < kNumBlockHorizontal; ++x) {
+			if (mapChipField_->GetMapChipTypeByIndex(y, x) == MapChipType::kBlock) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				worldTransformBlocks_[y][x] = worldTransform;
+				worldTransformBlocks_[y][x]->translation_ = mapChipField_->GetMapChipPositionByIndex(y, x);
+			}
 		}
 	}
-	
+
+	// 初始化调试相机
+	debugCamera_ = new DebugCamera(1280, 720);
+	PrimitiveDrawer::GetInstance()->SetCamera(&camera_);
+
+	// 初始化天空盒
 	skydome_ = new SkyDome();
 	skydome_->Initialize();
 
-    modelPlayer_ = Model::CreateFromOBJ("player");
+	// 初始化玩家
 	player_ = new Player();
 	player_->Initialize(modelPlayer_, &camera_);
-
 }
 void GameScene::Update() { 
 
