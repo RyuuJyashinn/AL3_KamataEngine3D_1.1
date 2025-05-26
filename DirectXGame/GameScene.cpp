@@ -8,8 +8,6 @@ void GameScene::Initialize() {
 	camera_.Initialize();
 
 	modelBlock_ = Model::CreateFromOBJ("block");
-	modelPlayer_ = Model::CreateFromOBJ("player");
-
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
 
@@ -39,7 +37,8 @@ void GameScene::Initialize() {
 
 
 	player_ = new Player();
-	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(1, 1);
+	modelPlayer_ = Model::CreateFromOBJ("player");
+	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
 }
 void GameScene::Update() { 
