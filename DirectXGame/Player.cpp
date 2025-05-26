@@ -18,8 +18,7 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 
 void Player::Update() {
 
-	worldTransform_.translation_+= velocity_;
-	worldTransform_.TransferMatrix();
+
 
 	if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
 
@@ -32,7 +31,8 @@ void Player::Update() {
 		velocity_ += acceleration;
 	}
 
-
+		worldTransform_.translation_ += velocity_;
+	worldTransform_.TransferMatrix();
 }
 
 	
