@@ -1,5 +1,6 @@
 #include"Player.h"
 #include<numbers>
+#include<cmath>
 
 using namespace KamataEngine;
 
@@ -17,9 +18,7 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 
 void Player::Update() {
 
-	worldTransform_.translation_.x += velocity_.x;
-	worldTransform_.translation_.y += velocity_.y;
-	worldTransform_.translation_.z += velocity_.z;
+	worldTransform_.translation_+= velocity_;
 	worldTransform_.TransferMatrix();
 
 	if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
@@ -30,9 +29,14 @@ void Player::Update() {
 		} else if (Input::GetInstance()->PushKey(DIK_LEFT)) {
 			acceleration.x -= kAcceleration;
 		}
+		velocity_ += acceleration;
 	}
+
+
 }
-	void Player::Draw(const Camera& camera) {
+
+	
+void Player::Draw(const Camera& camera) {
 
 	model_->Draw(worldTransform_, camera);
 
