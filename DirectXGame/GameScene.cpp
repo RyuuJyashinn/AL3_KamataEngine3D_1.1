@@ -39,8 +39,8 @@ void GameScene::Initialize() {
 
 
 	player_ = new Player();
-
-	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(2, 2);
+	modelPlayer_ = Model::CreateFromOBJ("player");
+	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(1, 1);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
 }
 void GameScene::Update() { 
