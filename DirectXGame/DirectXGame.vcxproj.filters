@@ -31,6 +31,9 @@
     <Filter Include="クラス\Player">
       <UniqueIdentifier>{a9438bdc-9422-479e-9997-77466c1df4b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="クラス\MyMath">
+      <UniqueIdentifier>{3d4e6608-a490-41d8-8c97-6549924216fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -38,9 +41,6 @@
     </ClCompile>
     <ClCompile Include="GameScene.cpp">
       <Filter>クラス\GameScene</Filter>
-    </ClCompile>
-    <ClCompile Include="MyMath.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="SkyDome.cpp">
       <Filter>クラス\SkyDome</Filter>
@@ -50,6 +50,9 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>クラス\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="MyMath.cpp">
+      <Filter>クラス\MyMath</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -105,9 +108,6 @@
     <ClInclude Include="GameScene.h">
       <Filter>クラス\GameScene</Filter>
     </ClInclude>
-    <ClInclude Include="MyMath.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="SkyDome.h">
       <Filter>クラス\SkyDome</Filter>
     </ClInclude>
@@ -116,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>クラス\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMath.h">
+      <Filter>クラス\MyMath</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
