@@ -14,6 +14,9 @@ void GameScene::Initialize() {
 	const uint32_t kNumBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
 	const uint32_t kNumBlockVirtical = mapChipField_->GetNumBlockVirual();
 	worldTransformBlocks_.resize(kNumBlockVirtical);
+	
+
+
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
 	}
@@ -40,26 +43,16 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::CreateFromOBJ("player");
 	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
+
+	// camera contro
+	cameraController_ = new CameraController();
+	cameraController_->Initialize();
+	cameraController_->setTarget(player_);
+	cameraController_->Reset();
+
+	//
 }
 void GameScene::Update() { 
-
-	
-
-	#ifdef _DEBUG
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		isDebugCameraActive_ = TRUE;
-	
-	}
-	#endif
-
-	if (isDebugCameraActive_) {
-		debugCamera_->Update();
-		camera_.matView = debugCamera_->GetCamera().matView;
-		camera_.matProjection = debugCamera_->GetCamera().matProjection;
-		camera_.TransferMatrix();
-	} else {
-		camera_.UpdateMatrix();
-	}
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -74,6 +67,23 @@ void GameScene::Update() {
 
 	skydome_->Update();
 	player_->Update();
+	cameraController_->Update();
+#ifdef _DEBUG
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		isDebugCameraActive_ = TRUE;
+	}
+#endif
+
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+		camera_.matView = debugCamera_->GetCamera().matView;
+		camera_.matProjection = debugCamera_->GetCamera().matProjection;
+		camera_.TransferMatrix();
+	} else {
+		camera_.matView = cameraController_->GetViewProjection().matView;
+		camera_.matProjection = cameraController_->GetViewProjection().matProjection;
+		camera_.TransferMatrix();
+	}
 }
 
 void GameScene::Draw() { 
