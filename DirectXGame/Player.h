@@ -11,6 +11,8 @@ public:
 	void Update();
 	void Draw(const Camera& camera);
 	const KamataEngine::WorldTransform& GetWorldTransform() const { return worldTransform_; }
+	const Vector3 GetVelocity() const { return velocity_; }
+
 
 private:
 	WorldTransform worldTransform_;
@@ -18,9 +20,9 @@ private:
 	uint32_t textureHandle_ = 0;
 	Camera* camera_ = nullptr;
 	Vector3 velocity_ = {};
-	static inline const float kAcceleration = 0.01f;
+	static inline const float kAcceleration = 0.005f;
 	static inline const float kAttenuation = 0.05f;
-	static inline const float kLimitRunSpeed = 3.0f;
+	static inline const float kLimitRunSpeed = 2.0f;
 	LRDirection lrDircetion_ = LRDirection::kRight;
 
 	float turnFirstRotationY_ = 0.0f;

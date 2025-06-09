@@ -50,6 +50,8 @@ void GameScene::Initialize() {
 	cameraController_->setTarget(player_);
 	cameraController_->Reset();
 
+	CameraController::Rect cameraArea = {10.0f, 100-12.0f ,5.0f,5.0f};
+	cameraController_->SetMovableArea(cameraArea);
 	//
 }
 void GameScene::Update() { 
