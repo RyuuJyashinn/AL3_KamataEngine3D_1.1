@@ -40,6 +40,7 @@ void GameScene::Initialize() {
 
 
 	player_ = new Player();
+	player_->setMapChipField(mapChipField_);//2.7
 	modelPlayer_ = Model::CreateFromOBJ("player");
 	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);

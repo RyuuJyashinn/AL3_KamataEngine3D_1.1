@@ -20,7 +20,7 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 
 }
 
-void Player::Update() {
+void Player::InputMove() {
 
 	if (onGround_) {
 		if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
@@ -60,24 +60,28 @@ void Player::Update() {
 		} else {
 			velocity_.x *= (1.0f - kAttenuation);
 		}
-		//空中
+		// 空中
 	} else {
 		velocity_ += Vector3(0, -kGravityAcceleration, 0);
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
-	if (Input::GetInstance()->PushKey(DIK_UP)) {
-	
-	velocity_ += Vector3(0, kJumpAcceleration, 0);
+	//jump
+		if (Input::GetInstance()->PushKey(DIK_UP)) {
+
+		velocity_ += Vector3(0, kJumpAcceleration, 0);
 	}
+}
+
+void Player::CheckMapLanding() {
+
 	// 接地判定
 	bool landing = false;
 	if (velocity_.y < 0) {
 		if (worldTransform_.translation_.y <= 1.0f) {
 			landing = true;
 		}
-	
 	}
-	//接地判定
+	// 接地判定
 	if (onGround_) {
 		if (velocity_.y > 0.0f) {
 			onGround_ = false;
@@ -89,13 +93,12 @@ void Player::Update() {
 			velocity_.y = 0.0f;
 			onGround_ = true;
 		}
-	
 	}
-	//
-	worldTransform_.translation_ += velocity_;
+}
 
-	//转弯
-	if (turnTimer_>0.0f) {
+void Player::AnimateTurn() {
+
+	if (turnTimer_ > 0.0f) {
 
 		turnTimer_ -= 1.0f / 60.0f;
 
@@ -108,6 +111,26 @@ void Player::Update() {
 		worldTransform_.rotation_.y = EaseInOut(destinationRotationY, turnFirstRotationY_, turnTimer_ / kTimeTurn);
 	}
 
+
+}
+
+void Player::IsMapChipCollisionHappened() {
+
+
+
+
+}
+void Player::Update() {
+	//wasd 
+	InputMove();
+	
+	// 落地
+	CheckMapLanding();
+	//
+	worldTransform_.translation_ += velocity_;
+
+	//转弯
+	AnimateTurn();
 	//
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
