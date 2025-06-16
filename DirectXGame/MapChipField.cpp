@@ -2,6 +2,7 @@
 #include<map>
 #include<fstream>
 #include<sstream>
+#include<cmath>
 namespace {
 std::map<std::string, MapChipType> mapChipTable = {
     {"0", MapChipType::kBlank},
@@ -66,3 +67,12 @@ Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex
 
 	return Vector3(kBlockWidth*xIndex,kBlockHeight*(kNumBlockVirual-1-yIndex),0);
 };
+
+MapChipField::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
+	IndexSet indexSet;
+
+	indexSet.xIndex = static_cast<uint32_t>((position.x + kBlockWidth / 2) / kBlockWidth);
+	indexSet.yIndex = kNumBlockVirual - 1 - static_cast<uint32_t>((position.y + kBlockHeight / 2) / kBlockHeight);
+
+	return indexSet;
+}

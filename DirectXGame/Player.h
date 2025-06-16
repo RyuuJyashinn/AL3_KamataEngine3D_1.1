@@ -13,18 +13,37 @@ public:
 	void Draw(const Camera& camera);
 	const KamataEngine::WorldTransform& GetWorldTransform() const { return worldTransform_; }
 	const Vector3 GetVelocity() const { return velocity_; }
-	void setMapChipField(MapChipField* mapChipField) { mapChipField=mapChipField_; }
+	void setMapChipField(MapChipField* mapChipField) {
+		mapChipField_ = mapChipField; 
+	}
 
 	void InputMove();
 	void CheckMapLanding();
 	void AnimateTurn();
-	void IsMapChipCollisionHappened();
 	struct CollisionMapInfo {
-		bool topCollision = false;
-		bool landingCollision = false;
-		bool wallCollision = false;
-		Vector3 vec;
+		bool ceiling = false;
+		bool landing = false;
+		bool hitWall = false;
+		Vector3 move;
 	};
+
+	void CheckMapChipCollision(CollisionMapInfo& info);
+	void CheckMapCollisionUp(CollisionMapInfo& info);
+	void CheckMapCollisionDown(CollisionMapInfo& info);
+	void CheckMapCollisionLeft(CollisionMapInfo& info);
+	void CheckMapCollisionRight(CollisionMapInfo& info);
+
+	enum Corner {
+		kRightBottom,
+		kLeftBottom,
+		kLeftTop,
+		kRightTop,
+
+		kNumCorner
+	};
+	Vector3 CornerPosition(const Vector3& center, Corner corner);
+
+
 
 private:
 	WorldTransform worldTransform_;

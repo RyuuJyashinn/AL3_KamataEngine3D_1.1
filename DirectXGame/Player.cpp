@@ -114,16 +114,49 @@ void Player::AnimateTurn() {
 
 }
 
-void Player::IsMapChipCollisionHappened() {
-
-
-
+void Player::CheckMapChipCollision(CollisionMapInfo& info) {
+	CheckMapCollisionUp(info);
+	CheckMapCollisionDown(info);
+	CheckMapCollisionLeft(info);
+	CheckMapCollisionRight(info);
 
 }
+
+
+void Player::CheckMapCollisionUp(CollisionMapInfo& info) {
+	if (info.move.y <= 0.0f) {
+		return; // 早期 return（避免不必要计算）
+	}
+
+	std::array<Vector3, static_cast<uint32_t>(Player::kNumCorner)> positionsNew;
+
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(
+		    worldTransform_.translation_ + info.move, // 修正：使用 info.move 而不是 "info.移動量"
+		    static_cast<Player::Corner>(i)            // 修正：显式指定 Player::Corner
+		);
+	}
+
+}
+
+Vector3 Player::CornerPosition(const Vector3& center, Player::Corner corner) {
+	Vector3 offsetTable[static_cast<uint32_t>(Player::kNumCorner)] = {
+	    {+kWidth / 2.6f, -kHeight / 2.0f, 0}, // kRightBottom
+	    {-kWidth / 2.0f, -kHeight / 2.8f, 0}, // kLeftBottom
+	    {+kWidth / 2.0f, kHeight / 2.0f,  0}, // kRightTop
+	    {-kWidth / 2.0f, kHeight / 2.0f,  0}  // kLeftTop
+	};
+
+	return center + offsetTable[static_cast<uint32_t>(corner)];
+}
+
 void Player::Update() {
 	//wasd 
 	InputMove();
 	
+	CollisionMapInfo collisionMapInfo;
+	collisionMapInfo.move = velocity_;
+	CheckMapChipCollision(collisionMapInfo);
 	// 落地
 	CheckMapLanding();
 	//
