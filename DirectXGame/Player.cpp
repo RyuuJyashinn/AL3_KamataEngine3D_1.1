@@ -5,7 +5,7 @@
 #include<cmath>
 #include "KamataEngine.h"
 #include"MyMath.h"
-
+#include"MapChipField.h"
 using namespace KamataEngine;
 
 void Player::Initialize(Model* model, Camera* camera, const Vector3& position) { 
@@ -136,6 +136,27 @@ void Player::CheckMapCollisionUp(CollisionMapInfo& info) {
 		    static_cast<Player::Corner>(i)            // 修正：显式指定 Player::Corner
 		);
 	}
+
+	MapChipType mapChipType;
+	bool isHit = false;
+	//左上
+	MapChipField::IndexSet indexSet;
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex,indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		isHit = true;
+	}
+	//右上
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		isHit = true;
+	}
+
+
+
+
+
 
 }
 
