@@ -3,7 +3,6 @@
 #include"Player.h"
 #include <algorithm>
 using namespace KamataEngine;
-using namespace MathUtility;
 class Player;
 
 

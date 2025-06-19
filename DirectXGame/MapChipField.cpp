@@ -82,7 +82,7 @@ MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex
 	Rect rect;
 	rect.left = center.x - kBlockWidth / 2.0f;
 	rect.right = center.x + kBlockWidth / 2.0f;
-	rect.top = center.y + kBlockHeight / 2.0f; // 注意：Y 轴方向可能取决于你的坐标系（通常是上正下负）
+	rect.top = center.y + kBlockHeight / 2.0f; 
 	rect.bottom = center.y - kBlockHeight / 2.0f;
 
 	    return rect;

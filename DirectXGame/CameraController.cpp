@@ -1,5 +1,4 @@
 #include"CameraController.h"
-
 void CameraController::Initialize() { 
 	camera_.Initialize();
 
@@ -10,7 +9,7 @@ void CameraController::Update() {
 	
 	const WorldTransform& targetWorldTransform = target_->GetWorldTransform();
 	targetOnset_ = targetWorldTransform.translation_ + targetOffset_ + target_->GetVelocity() * kVelocityBias;
-	camera_.translation_.x = Lerp(camera_.translation_.x,targetOnset_.x,kInterpolatetionRate);
+	camera_.translation_.x = MathUtility::Lerp(camera_.translation_.x, targetOnset_.x, kInterpolatetionRate);
 
 	camera_.translation_.x = max(camera_.translation_.x, target_->GetVelocity().x+ movableArea_.left);
 	camera_.translation_.x = min(camera_.translation_.x,   target_->GetVelocity().x + movableArea_.right);

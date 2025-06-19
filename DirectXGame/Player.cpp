@@ -116,9 +116,7 @@ void Player::AnimateTurn() {
 
 void Player::CheckMapChipCollision(CollisionMapInfo& info) {
 	CheckMapCollisionUp(info);
-	CheckMapCollisionDown(info);
-	CheckMapCollisionLeft(info);
-	CheckMapCollisionRight(info);
+
 
 }
 
@@ -153,10 +151,13 @@ void Player::CheckMapCollisionUp(CollisionMapInfo& info) {
 		isHit = true;
 	}
 
-
-
-
-
+	if (isHit) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.move + Vector3(0, +kHeight / 2.0f, 0));
+		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+		info.move.y = std::max(0.0f, rect.bottom - worldTransform_.translation_.y - (kHeight / 2.0f + kBlank));
+		info.ceiling = true;
+	
+	}
 
 }
 
@@ -171,21 +172,41 @@ Vector3 Player::CornerPosition(const Vector3& center, Player::Corner corner) {
 	return center + offsetTable[static_cast<uint32_t>(corner)];
 }
 
+void Player::MoveByTheIsHitResult(const CollisionMapInfo& info) {
+
+	worldTransform_.translation_ += info.move;
+
+};
+
+void Player::SoultionWhenTouchTop(const CollisionMapInfo& info) {
+
+	if (info.ceiling) {
+		DebugText::GetInstance()->ConsolePrintf("hit ceiling\n");
+		velocity_.y = 0;	
+	}
+
+};
+
+
 void Player::Update() {
-	//wasd 
 	InputMove();
-	
+
 	CollisionMapInfo collisionMapInfo;
 	collisionMapInfo.move = velocity_;
-	CheckMapChipCollision(collisionMapInfo);
-	// 落地
-	CheckMapLanding();
-	//
-	worldTransform_.translation_ += velocity_;
 
-	//转弯
+	// 碰撞检测和处理
+	CheckMapChipCollision(collisionMapInfo);
+	SoultionWhenTouchTop(collisionMapInfo);
+
+	// 应用修正后的移动量（不再叠加velocity_）
+	worldTransform_.translation_ += collisionMapInfo.move;
+
+	// 地面检测（使用修正后的位置）
+	CheckMapLanding();
+    
+
+	// 6. 其他逻辑（旋转、矩阵更新等）
 	AnimateTurn();
-	//
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
 }

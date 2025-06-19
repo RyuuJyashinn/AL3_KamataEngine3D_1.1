@@ -29,9 +29,6 @@ public:
 
 	void CheckMapChipCollision(CollisionMapInfo& info);
 	void CheckMapCollisionUp(CollisionMapInfo& info);
-	void CheckMapCollisionDown(CollisionMapInfo& info);
-	void CheckMapCollisionLeft(CollisionMapInfo& info);
-	void CheckMapCollisionRight(CollisionMapInfo& info);
 
 	enum Corner {
 		kRightBottom,
@@ -43,7 +40,8 @@ public:
 	};
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
 
-
+	void MoveByTheIsHitResult(const CollisionMapInfo& info);
+	void SoultionWhenTouchTop(const CollisionMapInfo& info);
 
 private:
 	WorldTransform worldTransform_;
@@ -67,5 +65,5 @@ private:
 	MapChipField* mapChipField_ = nullptr;
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
-
+	static inline const float kBlank = 0.8f;
 };
