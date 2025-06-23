@@ -29,7 +29,8 @@ public:
 
 	void CheckMapChipCollision(CollisionMapInfo& info);
 	void CheckMapCollisionUp(CollisionMapInfo& info);
-
+	void CheckMapCollisionBottom(CollisionMapInfo& info);
+	void CheckMapLanding(const CollisionMapInfo& info);
 	enum Corner {
 		kRightBottom,
 		kLeftBottom,
@@ -42,6 +43,8 @@ public:
 
 	void MoveByTheIsHitResult(const CollisionMapInfo& info);
 	void SoultionWhenTouchTop(const CollisionMapInfo& info);
+
+
 
 private:
 	WorldTransform worldTransform_;
@@ -66,4 +69,5 @@ private:
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
 	static inline const float kBlank = 0.8f;
+	static inline const float kAttenuationLanding = 0.8f;
 };

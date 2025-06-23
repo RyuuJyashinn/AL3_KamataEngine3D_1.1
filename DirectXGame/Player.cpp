@@ -161,6 +161,13 @@ void Player::CheckMapCollisionUp(CollisionMapInfo& info) {
 
 }
 
+void Player::SoultionWhenTouchTop(const CollisionMapInfo& info) {
+
+	if (info.ceiling) {
+		velocity_.y = 0;
+	}
+};
+
 Vector3 Player::CornerPosition(const Vector3& center, Player::Corner corner) {
 	Vector3 offsetTable[static_cast<uint32_t>(Player::kNumCorner)] = {
 	    {+kWidth / 2.6f, -kHeight / 2.0f, 0}, // kRightBottom
@@ -178,15 +185,73 @@ void Player::MoveByTheIsHitResult(const CollisionMapInfo& info) {
 
 };
 
-void Player::SoultionWhenTouchTop(const CollisionMapInfo& info) {
 
-	if (info.ceiling) {
-		DebugText::GetInstance()->ConsolePrintf("hit ceiling\n");
-		velocity_.y = 0;	
+
+void Player::CheckMapCollisionBottom(CollisionMapInfo& info) {
+	if (info.move.y>0) {
+		return;
 	}
+	MapChipType mapChipType;
+	bool isHit = false;
+	MapChipField::IndexSet indexSet;
 
-};
 
+	if (isHit) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.move + Vector3(0, -kHeight / 2.0f, 0));
+		MapChipField::Rect rect=mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+
+		info.move.y = std::min(0.0f, rect.top - worldTransform_.translation_.y + (kHeight / 2.0f + kBlank));
+		info.landing = true;
+	}
+}
+
+// ⑥接地状態の切り替え処理
+void Player::CheckMapLanding(const CollisionMapInfo& info) {
+	// 自キャラが接地状態?
+	if (onGround_) {
+		// 接地状態の処理
+		//  ジャンプ開始
+		if (velocity_.y >0.0f)
+			onGround_ = false;
+
+	} else {
+		// 落下判定
+		MapChipType mapChipType;
+		bool isHit = false;
+
+		//  移動後の4つの角の座標
+		//  左下点の判定
+		std::array<Vector3, static_cast<uint32_t>(Player::kNumCorner)> positionsNew;
+        MapChipField::IndexSet indexSet;
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
+		mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+		if (mapChipType == MapChipType::kBlock) {
+			isHit = true;
+		}
+		//  右下点の判定
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
+		mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+		if (mapChipType == MapChipType::kBlock) {
+			isHit = true;
+		}
+		//  落下なら空中状態に切り替え
+		if (!isHit) {
+			// 空中状態に切り替える
+			onGround_ = false;
+		} else {
+			// 空中状態の処理
+			//  着地フラグ
+			if (info.landing) {
+				// 着地状態に切り替える(落下を止める)
+				onGround_ = true;
+				// 着地時にX速度を減衰
+				velocity_.x *= (1.0f - kAttenuationLanding);
+				// Y速度をゼロにする
+				velocity_.y = 0.0f;
+			}
+		}
+	}
+}
 
 void Player::Update() {
 	InputMove();
