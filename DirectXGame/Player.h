@@ -30,7 +30,7 @@ public:
 	void CheckMapChipCollision(CollisionMapInfo& info);
 	void CheckMapCollisionUp(CollisionMapInfo& info);
 	void CheckMapCollisionBottom(CollisionMapInfo& info);
-	void CheckMapLanding(const CollisionMapInfo& info);
+
 	enum Corner {
 		kRightBottom,
 		kLeftBottom,
@@ -43,7 +43,7 @@ public:
 
 	void MoveByTheIsHitResult(const CollisionMapInfo& info);
 	void SoultionWhenTouchTop(const CollisionMapInfo& info);
-
+	void SoultionWhenLanding(const CollisionMapInfo& info);
 
 
 private:
@@ -61,13 +61,14 @@ private:
 	float turnTimer_ = 0.0f;
 	static inline const float kTimeTurn = 0.3f;
 	bool onGround_ = true;
-	static inline const float kGravityAcceleration = 0.05f;
-	static inline const float kLimitFallSpeed = 1.0f;
+	static inline const float kGravityAcceleration = 0.025f;
+	static inline const float kLimitFallSpeed = 0.8f;
 	static inline const float kJumpAcceleration = 0.1f;
 
 	MapChipField* mapChipField_ = nullptr;
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
-	static inline const float kBlank = 0.8f;
+	static inline const float kBlank = 0.03f;
 	static inline const float kAttenuationLanding = 0.8f;
+	static inline const float kGroundSearchHeight = 0.15f;
 };

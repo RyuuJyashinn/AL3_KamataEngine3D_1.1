@@ -116,7 +116,7 @@ void Player::AnimateTurn() {
 
 void Player::CheckMapChipCollision(CollisionMapInfo& info) {
 	CheckMapCollisionUp(info);
-
+	CheckMapCollisionBottom(info);
 
 }
 
@@ -188,67 +188,68 @@ void Player::MoveByTheIsHitResult(const CollisionMapInfo& info) {
 
 
 void Player::CheckMapCollisionBottom(CollisionMapInfo& info) {
-	if (info.move.y>0) {
-		return;
+	if (info.move.y >= 0.0f) {
+		return; // 只在向下移动时检测
 	}
+
+	// 🔴 修复：初始化移动后的角坐标
+	std::array<Vector3, static_cast<uint32_t>(Player::kNumCorner)> positionsNew;
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.move, static_cast<Player::Corner>(i));
+	}
+
+	// 🔴 修复：实际检测左下和右下点
 	MapChipType mapChipType;
 	bool isHit = false;
 	MapChipField::IndexSet indexSet;
 
+	// 左下点检测（下移 kGroundSearchHeight）
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom] + Vector3(0, -kGroundSearchHeight, 0));
+	if (mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex) == MapChipType::kBlock) {
+		isHit = true;
+	}
 
-	if (isHit) {
+	// 右下点检测（若左下未命中）
+	if (!isHit) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom] + Vector3(0, -kGroundSearchHeight, 0));
+		if (mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex) == MapChipType::kBlock) {
+			isHit = true;
+		}
+	}
+
+  if (isHit) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.move + Vector3(0, -kHeight / 2.0f, 0));
-		MapChipField::Rect rect=mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 
-		info.move.y = std::min(0.0f, rect.top - worldTransform_.translation_.y + (kHeight / 2.0f + kBlank));
+		info.move.y = std::min(0.0f,rect.top - worldTransform_.translation_.y + (kHeight / 2.0f + kBlank));
 		info.landing = true;
 	}
+
+  if (info.landing) {
+    // 着地状態に切り替える(落下を止める)
+    onGround_ = true;
+    // 着地時にX速度を減衰
+    velocity_.x *= (1.0f- kAttenuationLanding);
+    // Y速度をゼロにする
+    velocity_.y = 0.0f;
 }
 
-// ⑥接地状態の切り替え処理
-void Player::CheckMapLanding(const CollisionMapInfo& info) {
-	// 自キャラが接地状態?
+}
+
+//接地状態の切り替え処理
+void Player::SoultionWhenLanding(const CollisionMapInfo& info) {
+
 	if (onGround_) {
-		// 接地状態の処理
-		//  ジャンプ開始
-		if (velocity_.y >0.0f)
+		if (velocity_.y > 0.0f) {
 			onGround_ = false;
-
-	} else {
-		// 落下判定
-		MapChipType mapChipType;
-		bool isHit = false;
-
-		//  移動後の4つの角の座標
-		//  左下点の判定
-		std::array<Vector3, static_cast<uint32_t>(Player::kNumCorner)> positionsNew;
-        MapChipField::IndexSet indexSet;
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
-		mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
-		if (mapChipType == MapChipType::kBlock) {
-			isHit = true;
 		}
-		//  右下点の判定
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
-		mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
-		if (mapChipType == MapChipType::kBlock) {
-			isHit = true;
-		}
-		//  落下なら空中状態に切り替え
-		if (!isHit) {
-			// 空中状態に切り替える
-			onGround_ = false;
-		} else {
-			// 空中状態の処理
-			//  着地フラグ
-			if (info.landing) {
-				// 着地状態に切り替える(落下を止める)
-				onGround_ = true;
-				// 着地時にX速度を減衰
-				velocity_.x *= (1.0f - kAttenuationLanding);
-				// Y速度をゼロにする
-				velocity_.y = 0.0f;
-			}
+	}
+	// 空中
+	else {
+		if (info.landing) {
+			onGround_ = true;                            
+			velocity_.x *= (1.0f - kAttenuationLanding); 
+			velocity_.y = 0.0f;                          
 		}
 	}
 }
@@ -261,14 +262,16 @@ void Player::Update() {
 
 	// 碰撞检测和处理
 	CheckMapChipCollision(collisionMapInfo);
-	SoultionWhenTouchTop(collisionMapInfo);
 
+
+
+	SoultionWhenTouchTop(collisionMapInfo);
+	SoultionWhenLanding(collisionMapInfo);
 	// 应用修正后的移动量（不再叠加velocity_）
+
+
 	worldTransform_.translation_ += collisionMapInfo.move;
 
-	// 地面检测（使用修正后的位置）
-	CheckMapLanding();
-    
 
 	// 6. 其他逻辑（旋转、矩阵更新等）
 	AnimateTurn();
