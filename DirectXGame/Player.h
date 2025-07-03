@@ -69,6 +69,6 @@ private:
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
 	static inline const float kBlank = 0.03f;
-	static inline const float kAttenuationLanding = 0.8f;
-	static inline const float kGroundSearchHeight = 0.15f;
+	static inline const float kAttenuationLanding = 0.2f;
+	static inline const float kGroundSearchHeight = 0.001f;
 };

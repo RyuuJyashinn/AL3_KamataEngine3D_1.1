@@ -161,6 +161,47 @@ void Player::CheckMapCollisionUp(CollisionMapInfo& info) {
 
 }
 
+
+void Player::CheckMapCollisionBottom(CollisionMapInfo& info) {
+	if (info.move.y >= 0.0f) {
+		return;
+	}
+
+	std::array<Vector3, static_cast<uint32_t>(Player::kNumCorner)> positionsNew;
+
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.move, static_cast<Player::Corner>(i));
+	}
+
+	// 🔴 修复：实际检测左下和右下点
+	MapChipType mapChipType;
+	bool isHit = false;
+
+	// 左下点检测（下移 kGroundSearchHeight）
+	MapChipField::IndexSet indexSet;
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom] + Vector3(0, -kGroundSearchHeight, 0));
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		isHit = true;
+	}
+
+	// 右下点检测（若左下未命中）
+
+    indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom] + Vector3(0, -kGroundSearchHeight, 0));
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+			isHit = true;
+	}
+
+
+	if (isHit) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.move + Vector3(0, -kHeight / 2.0f, 0));
+		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+		info.move.y = std::min(0.0f, rect.top - worldTransform_.translation_.y + (kHeight / 2.0f + kBlank));
+		info.landing = true;
+	}
+}
+
 void Player::SoultionWhenTouchTop(const CollisionMapInfo& info) {
 
 	if (info.ceiling) {
@@ -187,54 +228,6 @@ void Player::MoveByTheIsHitResult(const CollisionMapInfo& info) {
 
 
 
-void Player::CheckMapCollisionBottom(CollisionMapInfo& info) {
-	if (info.move.y >= 0.0f) {
-		return; // 只在向下移动时检测
-	}
-
-	// 🔴 修复：初始化移动后的角坐标
-	std::array<Vector3, static_cast<uint32_t>(Player::kNumCorner)> positionsNew;
-	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
-		positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.move, static_cast<Player::Corner>(i));
-	}
-
-	// 🔴 修复：实际检测左下和右下点
-	MapChipType mapChipType;
-	bool isHit = false;
-	MapChipField::IndexSet indexSet;
-
-	// 左下点检测（下移 kGroundSearchHeight）
-	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom] + Vector3(0, -kGroundSearchHeight, 0));
-	if (mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex) == MapChipType::kBlock) {
-		isHit = true;
-	}
-
-	// 右下点检测（若左下未命中）
-	if (!isHit) {
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom] + Vector3(0, -kGroundSearchHeight, 0));
-		if (mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex) == MapChipType::kBlock) {
-			isHit = true;
-		}
-	}
-
-  if (isHit) {
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.move + Vector3(0, -kHeight / 2.0f, 0));
-		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-
-		info.move.y = std::min(0.0f,rect.top - worldTransform_.translation_.y + (kHeight / 2.0f + kBlank));
-		info.landing = true;
-	}
-
-  if (info.landing) {
-    // 着地状態に切り替える(落下を止める)
-    onGround_ = true;
-    // 着地時にX速度を減衰
-    velocity_.x *= (1.0f- kAttenuationLanding);
-    // Y速度をゼロにする
-    velocity_.y = 0.0f;
-}
-
-}
 
 //接地状態の切り替え処理
 void Player::SoultionWhenLanding(const CollisionMapInfo& info) {
@@ -242,6 +235,33 @@ void Player::SoultionWhenLanding(const CollisionMapInfo& info) {
 	if (onGround_) {
 		if (velocity_.y > 0.0f) {
 			onGround_ = false;
+		} else {
+			//落下 
+			MapChipType mapChipType;
+			bool isHit = false;
+			std::array<Vector3, static_cast<uint32_t>(Player::kNumCorner)> positionsNew;
+			for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+				positionsNew[i] = CornerPosition(worldTransform_.translation_, static_cast<Player::Corner>(i));
+			}
+			// 左下点检测
+			MapChipField::IndexSet indexSet;
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom] + Vector3(0, -kGroundSearchHeight, 0));
+			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+			if (mapChipType == MapChipType::kBlock) {
+				isHit = true;
+			}
+
+			// 右下点检测
+
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom] + Vector3(0, -kGroundSearchHeight, 0));
+			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+			if (mapChipType == MapChipType::kBlock) {
+				isHit = true;
+			}
+
+		if (isHit) {
+				onGround_ = false;	
+		}
 		}
 	}
 	// 空中
