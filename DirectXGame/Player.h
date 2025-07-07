@@ -70,7 +70,7 @@ private:
 	MapChipField* mapChipField_ = nullptr;
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
-	static inline const float kBlank = 0.03f;
+	static inline const float kBlank = 0.05f;
 	static inline const float kAttenuationLanding = 0.2f;
 	static inline const float kGroundSearchHeight = 0.01f;
 	static inline const float kAttenuationWall = 0.2f;
