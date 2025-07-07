@@ -54,9 +54,9 @@ private:
 	uint32_t textureHandle_ = 0;
 	Camera* camera_ = nullptr;
 	Vector3 velocity_ = {};
-	static inline const float kAcceleration = 0.02f;
+	static inline const float kAcceleration = 0.01f;
 	static inline const float kAttenuation = 0.05f;
-	static inline const float kLimitRunSpeed = 2.0f;
+	static inline const float kLimitRunSpeed = 1.0f;
 	LRDirection lrDircetion_ = LRDirection::kRight;
 
 	float turnFirstRotationY_ = 0.0f;
