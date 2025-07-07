@@ -38,12 +38,17 @@ void GameScene::Initialize() {
 	skydome_ = new SkyDome();
 	skydome_->Initialize();
 
-
+	//
 	player_ = new Player();
 	player_->setMapChipField(mapChipField_);//2.7
 	modelPlayer_ = Model::CreateFromOBJ("player");
 	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
+	//
+	enemy_ = new Enemy();
+	modelEnemy_ = Model::CreateFromOBJ("enemy");
+	Vector3 enemyPostion = mapChipField_->GetMapChipPositionByIndex(5, 18);
+	enemy_->Initialize(modelEnemy_, &camera_, enemyPostion);
 
 	// camera contro
 	cameraController_ = new CameraController();
@@ -70,6 +75,7 @@ void GameScene::Update() {
 
 	skydome_->Update();
 	player_->Update();
+	enemy_->Update();
 	cameraController_->Update();
 #ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
@@ -103,6 +109,7 @@ void GameScene::Draw() {
 
 		skydome_->Draw(camera_);
 	    player_->Draw(camera_);
+	    enemy_->Draw(camera_);
 
 	Model::PostDraw();
 	  

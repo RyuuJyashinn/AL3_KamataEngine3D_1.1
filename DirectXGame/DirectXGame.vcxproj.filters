@@ -37,6 +37,9 @@
     <Filter Include="クラス\CameraController">
       <UniqueIdentifier>{ccd80964-28da-45c6-b5e7-d34150ccbd13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="クラス\Enemy">
+      <UniqueIdentifier>{d8772df7-723f-42f5-8b0a-cd8386e5c926}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -59,6 +62,9 @@
     </ClCompile>
     <ClCompile Include="CameraController.cpp">
       <Filter>クラス\CameraController</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>クラス\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +134,9 @@
     </ClInclude>
     <ClInclude Include="CameraController.h">
       <Filter>クラス\CameraController</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>クラス\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
