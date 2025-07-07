@@ -66,9 +66,20 @@ void Player::InputMove() {
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
 	//jump
-		if (Input::GetInstance()->PushKey(DIK_UP)) {
+	/*if (Input::GetInstance()->PushKey(DIK_UP)) {
 
 		velocity_ += Vector3(0, kJumpAcceleration, 0);
+	}*/
+	bool upKeyPressed = Input::GetInstance()->PushKey(DIK_UP);
+
+	if (upKeyPressed) {
+		if (!jumpKeyPressed_ && onGround_) { // 只有首次按下且在地面时才跳跃
+			velocity_.y = kJumpAcceleration;
+			onGround_ = false;
+			jumpKeyPressed_ = true; // 标记按键已按下
+		}
+	} else {
+		jumpKeyPressed_ = false; // 按键松开时重置状态
 	}
 }
 
@@ -117,7 +128,8 @@ void Player::AnimateTurn() {
 void Player::CheckMapChipCollision(CollisionMapInfo& info) {
 	CheckMapCollisionUp(info);
 	CheckMapCollisionBottom(info);
-
+	CheckMapCollisionLeft(info);
+	CheckMapCollisionRight(info);
 }
 
 
@@ -202,6 +214,84 @@ void Player::CheckMapCollisionBottom(CollisionMapInfo& info) {
 	}
 }
 
+void Player::CheckMapCollisionLeft(CollisionMapInfo& info) {
+if (info.move.x >= 0.0f) {
+		return; // 早期 return（避免不必要计算）
+	}
+
+	std::array<Vector3, static_cast<uint32_t>(Player::kNumCorner)> positionsNew;
+
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(
+		    worldTransform_.translation_ + info.move, // 修正：使用 info.move 而不是 "info.移動量"
+		    static_cast<Player::Corner>(i)            // 修正：显式指定 Player::Corner
+		);
+	}
+
+	MapChipType mapChipType;
+	bool isHit = false;
+	// 左上
+	MapChipField::IndexSet indexSet;
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		isHit = true;
+	}
+	// 左上
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		isHit = true;
+	}
+
+	if (isHit) {
+
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.move + Vector3(-kWidth / 2.0f, 0, 0));
+		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+		info.move.x = std::max(0.0f, (rect.right - worldTransform_.translation_.x + (kWidth / 2.0f + kBlank)));
+		info.hitWall = true;
+	}
+
+
+}
+
+void Player::CheckMapCollisionRight(CollisionMapInfo& info) {
+	if (info.move.x <= 0.0f) {
+		return; // 早期 return（避免不必要计算）
+	}
+
+	std::array<Vector3, static_cast<uint32_t>(Player::kNumCorner)> positionsNew;
+
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(
+		    worldTransform_.translation_ + info.move, // 修正：使用 info.move 而不是 "info.移動量"
+		    static_cast<Player::Corner>(i)            // 修正：显式指定 Player::Corner
+		);
+	}
+
+	MapChipType mapChipType;
+	bool isHit = false;
+	// 右上
+	MapChipField::IndexSet indexSet;
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		isHit = true;
+	}
+	// 右下
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		isHit = true;
+	}
+
+	if (isHit) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.move + Vector3(+kWidth / 2.0f, 0, 0));
+		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+		info.move.x = std::min(0.0f,(rect.left - worldTransform_.translation_.x - (kWidth / 2.0f + kBlank)));
+		info.hitWall = true;
+	}
+}
 void Player::SoultionWhenTouchTop(const CollisionMapInfo& info) {
 
 	if (info.ceiling) {
@@ -238,7 +328,8 @@ void Player::SoultionWhenLanding(const CollisionMapInfo& info) {
 		} else {
 			//落下 
 			MapChipType mapChipType;
-			bool isHit = false;
+			bool leftHit = false;
+			bool rightHit = false;
 			std::array<Vector3, static_cast<uint32_t>(Player::kNumCorner)> positionsNew;
 			for (uint32_t i = 0; i < positionsNew.size(); ++i) {
 				positionsNew[i] = CornerPosition(worldTransform_.translation_, static_cast<Player::Corner>(i));
@@ -248,7 +339,7 @@ void Player::SoultionWhenLanding(const CollisionMapInfo& info) {
 			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom] + Vector3(0, -kGroundSearchHeight, 0));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {
-				isHit = true;
+				leftHit = true;
 			}
 
 			// 右下点检测
@@ -256,10 +347,10 @@ void Player::SoultionWhenLanding(const CollisionMapInfo& info) {
 			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom] + Vector3(0, -kGroundSearchHeight, 0));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {
-				isHit = true;
+				rightHit = true;
 			}
 
-		if (isHit) {
+		if (!leftHit && !rightHit) {
 				onGround_ = false;	
 		}
 		}
@@ -274,6 +365,19 @@ void Player::SoultionWhenLanding(const CollisionMapInfo& info) {
 	}
 }
 
+void Player::SoultionWhenWalling(const CollisionMapInfo& info) {
+	if (info.hitWall) {
+		
+		if (std::abs(velocity_.x) > 0.1f) {
+			velocity_.x *= (1.0f - kAttenuationWall);
+		} else {
+			velocity_.x = 0.0f; 
+		}
+	}
+
+
+
+	}
 void Player::Update() {
 	InputMove();
 
@@ -287,6 +391,7 @@ void Player::Update() {
 
 	SoultionWhenTouchTop(collisionMapInfo);
 	SoultionWhenLanding(collisionMapInfo);
+	SoultionWhenWalling(collisionMapInfo);
 	// 应用修正后的移动量（不再叠加velocity_）
 
 

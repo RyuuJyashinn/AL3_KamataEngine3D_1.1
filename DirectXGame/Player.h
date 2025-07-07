@@ -30,6 +30,8 @@ public:
 	void CheckMapChipCollision(CollisionMapInfo& info);
 	void CheckMapCollisionUp(CollisionMapInfo& info);
 	void CheckMapCollisionBottom(CollisionMapInfo& info);
+	void CheckMapCollisionLeft(CollisionMapInfo& info);
+	void CheckMapCollisionRight(CollisionMapInfo& info);
 
 	enum Corner {
 		kRightBottom,
@@ -44,7 +46,7 @@ public:
 	void MoveByTheIsHitResult(const CollisionMapInfo& info);
 	void SoultionWhenTouchTop(const CollisionMapInfo& info);
 	void SoultionWhenLanding(const CollisionMapInfo& info);
-
+	void SoultionWhenWalling(const CollisionMapInfo& info);
 
 private:
 	WorldTransform worldTransform_;
@@ -52,7 +54,7 @@ private:
 	uint32_t textureHandle_ = 0;
 	Camera* camera_ = nullptr;
 	Vector3 velocity_ = {};
-	static inline const float kAcceleration = 0.005f;
+	static inline const float kAcceleration = 0.02f;
 	static inline const float kAttenuation = 0.05f;
 	static inline const float kLimitRunSpeed = 2.0f;
 	LRDirection lrDircetion_ = LRDirection::kRight;
@@ -63,12 +65,15 @@ private:
 	bool onGround_ = true;
 	static inline const float kGravityAcceleration = 0.025f;
 	static inline const float kLimitFallSpeed = 0.8f;
-	static inline const float kJumpAcceleration = 0.1f;
+	static inline const float kJumpAcceleration = 0.4f;
 
 	MapChipField* mapChipField_ = nullptr;
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
 	static inline const float kBlank = 0.03f;
 	static inline const float kAttenuationLanding = 0.2f;
-	static inline const float kGroundSearchHeight = 0.001f;
+	static inline const float kGroundSearchHeight = 0.01f;
+	static inline const float kAttenuationWall = 0.2f;
+
+	  bool jumpKeyPressed_ = false;
 };
