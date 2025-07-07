@@ -1,6 +1,7 @@
 #pragma once
 #include"KamataEngine.h"
 #include"Player.h"
+#include"Enemy.h"
 #include<vector> 
 #include"SkyDome.h"
 #include"MapChipField.h"
@@ -27,6 +28,8 @@ private:
 	uint32_t soundDateHandle_ = 0;
 	Player* player_ = nullptr;
 	Model* modelPlayer_ = nullptr;
+	Enemy* enemy_ = nullptr;
+	Model* modelEnemy_ = nullptr;
 	SkyDome* skydome_ = nullptr;
 	MapChipField* mapChipField_;
 	CameraController* cameraController_ = nullptr;

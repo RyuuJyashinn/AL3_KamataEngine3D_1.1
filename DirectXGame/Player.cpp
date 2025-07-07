@@ -411,21 +411,14 @@ void Player::Update() {
 	CollisionMapInfo collisionMapInfo;
 	collisionMapInfo.move = velocity_;
 
-	// 碰撞检测和处理
 	CheckMapChipCollision(collisionMapInfo);
-
-
 
 	SoultionWhenTouchTop(collisionMapInfo);
 	SoultionWhenLanding(collisionMapInfo);
 	SoultionWhenWalling(collisionMapInfo);
-	// 应用修正后的移动量（不再叠加velocity_）
-
 
 	worldTransform_.translation_ += collisionMapInfo.move;
 
-
-	// 6. 其他逻辑（旋转、矩阵更新等）
 	AnimateTurn();
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
