@@ -107,6 +107,8 @@ void GameScene::Update() {
 	}
 
 	cameraController_->Update();
+
+	CheckAllCollison();
 #ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		isDebugCameraActive_ = TRUE;
