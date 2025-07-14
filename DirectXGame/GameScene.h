@@ -19,6 +19,7 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
+	~GameScene();
 
 private:
 	bool isDebugCameraActive_ = false;
@@ -28,9 +29,12 @@ private:
 	uint32_t soundDateHandle_ = 0;
 	Player* player_ = nullptr;
 	Model* modelPlayer_ = nullptr;
-	Enemy* enemy_ = nullptr;
+
 	Model* modelEnemy_ = nullptr;
 	SkyDome* skydome_ = nullptr;
 	MapChipField* mapChipField_;
 	CameraController* cameraController_ = nullptr;
+
+	std::list<Enemy*> enemies_;
+	uint32_t enemyNum_=3;
 };

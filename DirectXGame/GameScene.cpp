@@ -44,11 +44,15 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::CreateFromOBJ("player");
 	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
-	//
-	enemy_ = new Enemy();
+	//敌
 	modelEnemy_ = Model::CreateFromOBJ("enemy");
-	Vector3 enemyPostion = mapChipField_->GetMapChipPositionByIndex(5, 18);
-	enemy_->Initialize(modelEnemy_, &camera_, enemyPostion);
+	for (uint32_t i = 0; i < enemyNum_;++i) {
+		Enemy* newEnemy = new Enemy();
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(5-i, 18-i);
+		newEnemy->Initialize(modelEnemy_, &camera_, enemyPosition);
+		enemies_.push_back(newEnemy);
+	}
+
 
 	// camera contro
 	cameraController_ = new CameraController();
@@ -75,7 +79,10 @@ void GameScene::Update() {
 
 	skydome_->Update();
 	player_->Update();
-	enemy_->Update();
+	for (Enemy* enemy : enemies_) {
+		enemy->Update();
+	}
+
 	cameraController_->Update();
 #ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
@@ -109,9 +116,19 @@ void GameScene::Draw() {
 
 		skydome_->Draw(camera_);
 	    player_->Draw(camera_);
-	    enemy_->Draw(camera_);
-
+	  
+	    for (Enemy* enemy : enemies_) { 
+			enemy->Draw(camera_);
+	    }
 	Model::PostDraw();
 	  
+
+}
+
+
+GameScene::~GameScene() {
+	for (Enemy* enemy : enemies_) {
+		delete enemy;
+	}
 
 }
