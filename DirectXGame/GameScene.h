@@ -19,7 +19,8 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
-	~GameScene();
+	//~GameScene();
+	void CheckAllCollison();
 
 private:
 	bool isDebugCameraActive_ = false;

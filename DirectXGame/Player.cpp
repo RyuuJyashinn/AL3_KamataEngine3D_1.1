@@ -401,10 +401,29 @@ void Player::SoultionWhenWalling(const CollisionMapInfo& info) {
 			velocity_.x = 0.0f; 
 		}
 	}
+}
 
+Vector3 Player::GetWorldPosition() { 
+	Vector3 worldPos; 
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	return worldPos;
+}
 
+AABB Player::GetAABB() { 
+	Vector3 worldPos = GetWorldPosition();
+	AABB aabb;
+	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
+	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
+	return aabb;
+}
 
-	}
+void Player::OnCollision(const Enemy* enemy) { 
+	(void)enemy;
+	velocity_ += Vector3(10.0f,2.0f,0.0f);
+}
+
 void Player::Update() {
 	InputMove();
 

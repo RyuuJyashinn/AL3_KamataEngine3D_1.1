@@ -64,6 +64,29 @@ void GameScene::Initialize() {
 	cameraController_->SetMovableArea(cameraArea);
 	//
 }
+
+void GameScene::CheckAllCollison() {
+	#pragma region
+	{
+		AABB aabb1, aabb2;
+		aabb1 = player_->GetAABB();
+
+		for (Enemy* enemy : enemies_) {
+
+			aabb2 = enemy->GetAABB();
+			if (IsCollision(aabb1, aabb2)) {
+				player_->OnCollision(enemy);
+				enemy->OnCollision(player_);
+			}
+		}
+
+	}
+	
+
+    #pragma endregion
+
+ }
+
 void GameScene::Update() { 
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
@@ -126,9 +149,9 @@ void GameScene::Draw() {
 }
 
 
-GameScene::~GameScene() {
-	for (Enemy* enemy : enemies_) {
-		delete enemy;
-	}
-
-}
+//GameScene::~GameScene() {
+//	/*for (Enemy* enemy : enemies_) {
+//		delete enemy;
+//	}*/
+//
+//}

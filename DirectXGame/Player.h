@@ -1,7 +1,10 @@
 #pragma once
 #include "KamataEngine.h"
 #include"MapChipField.h"
+#include"MyMath.h"
+#include"Enemy.h"
 using namespace KamataEngine;
+class Enemy;
 enum class LRDirection {
 	kRight,
 	kLeft,
@@ -47,6 +50,10 @@ public:
 	void SoultionWhenTouchTop(const CollisionMapInfo& info);
 	void SoultionWhenLanding(const CollisionMapInfo& info);
 	void SoultionWhenWalling(const CollisionMapInfo& info);
+
+	Vector3 GetWorldPosition();
+	AABB GetAABB();
+	void OnCollision(const Enemy* enemy);
 
 private:
 	WorldTransform worldTransform_;
