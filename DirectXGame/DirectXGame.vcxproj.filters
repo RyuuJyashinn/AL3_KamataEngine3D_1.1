@@ -40,6 +40,9 @@
     <Filter Include="クラス\Enemy">
       <UniqueIdentifier>{d8772df7-723f-42f5-8b0a-cd8386e5c926}</UniqueIdentifier>
     </Filter>
+    <Filter Include="クラス\DeathParticles">
+      <UniqueIdentifier>{ef3239aa-6f65-42f0-a979-27daa7f3a494}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -65,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>クラス\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="DeathParticles.cpp">
+      <Filter>クラス\DeathParticles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>クラス\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="DeathParticles.h">
+      <Filter>クラス\DeathParticles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
