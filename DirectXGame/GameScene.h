@@ -6,6 +6,7 @@
 #include"SkyDome.h"
 #include"MapChipField.h"
 #include"CameraController.h"
+#include"DeathParticles.h"
 class GameScene {
 public:
 	KamataEngine::Sprite* sprite_ = nullptr;
@@ -38,4 +39,7 @@ private:
 
 	std::list<Enemy*> enemies_;
 	uint32_t enemyNum_=3;
+	
+	DeathParticles* deathParticles_ = nullptr;
+	Model* modelDeath_ = nullptr;
 };

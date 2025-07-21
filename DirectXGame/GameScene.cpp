@@ -44,6 +44,10 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::CreateFromOBJ("player");
 	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
+	// DeathParticles
+	deathParticles_ = new DeathParticles;
+	modelDeath_ = Model::CreateFromOBJ("deathParticle");
+	deathParticles_->Initialize(modelDeath_, &camera_, playerPostion);
 	//敌
 	modelEnemy_ = Model::CreateFromOBJ("enemy");
 	for (uint32_t i = 0; i < enemyNum_;++i) {
@@ -52,7 +56,7 @@ void GameScene::Initialize() {
 		newEnemy->Initialize(modelEnemy_, &camera_, enemyPosition);
 		enemies_.push_back(newEnemy);
 	}
-
+	
 
 	// camera contro
 	cameraController_ = new CameraController();
@@ -105,6 +109,10 @@ void GameScene::Update() {
 	for (Enemy* enemy : enemies_) {
 		enemy->Update();
 	}
+	if (deathParticles_ != nullptr) {
+	
+	deathParticles_->Update();
+	}
 
 	cameraController_->Update();
 
@@ -141,7 +149,10 @@ void GameScene::Draw() {
 
 		skydome_->Draw(camera_);
 	    player_->Draw(camera_);
-	  
+	    if (deathParticles_ != nullptr) {
+
+		    deathParticles_->Draw(camera_);
+	    }
 	    for (Enemy* enemy : enemies_) { 
 			enemy->Draw(camera_);
 	    }
