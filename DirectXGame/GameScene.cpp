@@ -217,7 +217,11 @@ void GameScene::Draw() {
 	}
 
 		skydome_->Draw(camera_);
-	    player_->Draw(camera_);
+	if (player_->IsDead() != true) {
+		    player_->Draw(camera_);
+	}
+	   
+
 	    if (deathParticles_ != nullptr) {
 
 		    deathParticles_->Draw(camera_);

@@ -43,6 +43,9 @@
     <Filter Include="クラス\DeathParticles">
       <UniqueIdentifier>{ef3239aa-6f65-42f0-a979-27daa7f3a494}</UniqueIdentifier>
     </Filter>
+    <Filter Include="クラス\TitleScene">
+      <UniqueIdentifier>{2d3150ce-cb0d-4f4a-86ea-0b797005890a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="DeathParticles.cpp">
       <Filter>クラス\DeathParticles</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>クラス\TitleScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="DeathParticles.h">
       <Filter>クラス\DeathParticles</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>クラス\TitleScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include"KamataEngine.h"
 #include"GameScene.h"
+#include"TitleScene.h"
 using namespace KamataEngine;
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -15,6 +16,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	//ケ-ムシ-ンのインスタンス生成
 	GameScene* gameScene = new GameScene();
+	TitleScene* titleScene = nullptr; 
 	// ケ-ムシ-ンのインスタンス初期化
 	gameScene->Initialize();
 
