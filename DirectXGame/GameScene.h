@@ -7,6 +7,7 @@
 #include"MapChipField.h"
 #include"CameraController.h"
 #include"DeathParticles.h"
+
 class GameScene {
 public:
 	KamataEngine::Sprite* sprite_ = nullptr;
@@ -22,6 +23,12 @@ public:
 	void Draw();
 	//~GameScene();
 	void CheckAllCollison();
+
+	enum class Phase {
+		kPlay,
+		kDeath,
+	};
+	Phase phase_;
 
 private:
 	bool isDebugCameraActive_ = false;

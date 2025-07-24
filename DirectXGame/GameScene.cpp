@@ -56,7 +56,8 @@ void GameScene::Initialize() {
 		newEnemy->Initialize(modelEnemy_, &camera_, enemyPosition);
 		enemies_.push_back(newEnemy);
 	}
-	
+	//
+	phase_ = Phase::kPlay;
 
 	// camera contro
 	cameraController_ = new CameraController();
