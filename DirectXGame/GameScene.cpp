@@ -45,9 +45,10 @@ void GameScene::Initialize() {
 	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
 	// DeathParticles
-	deathParticles_ = new DeathParticles;
+	deathParticles_ = nullptr; 
+	//deathParticles_ = new DeathParticles;
 	modelDeath_ = Model::CreateFromOBJ("deathParticle");
-	deathParticles_->Initialize(modelDeath_, &camera_, playerPostion);
+	//deathParticles_->Initialize(modelDeath_, &camera_, playerPostion);
 	//敌
 	modelEnemy_ = Model::CreateFromOBJ("enemy");
 	for (uint32_t i = 0; i < enemyNum_;++i) {
@@ -92,47 +93,114 @@ void GameScene::CheckAllCollison() {
 
  }
 
-void GameScene::Update() { 
-
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
-		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
-			if (!worldTransformBlock)
-				continue;
-
-			worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
-			worldTransformBlock->TransferMatrix();
-
+void GameScene::ChangePhase() {
+	switch (phase_) {
+	case Phase::kPlay:
+		if (player_->IsDead()) {
+			phase_ = Phase::kDeath;
+			const Vector3& deathParticlesPosition=player_->GetWorldPosition();
+			deathParticles_ = new DeathParticles();
+			deathParticles_->Initialize(modelDeath_, &camera_, deathParticlesPosition);
 		}
-	}
-
-	skydome_->Update();
-	player_->Update();
-	for (Enemy* enemy : enemies_) {
-		enemy->Update();
-	}
-	if (deathParticles_ != nullptr) {
+		break;
+	case Phase::kDeath:
 	
-	deathParticles_->Update();
+		break;
 	}
+}
 
-	cameraController_->Update();
 
-	CheckAllCollison();
+void GameScene::Update() { 
+	
+	switch (phase_) {
+	case Phase::kPlay:
+		//
+		skydome_->Update();
+		//
+		player_->Update();
+		//
+		for (Enemy* enemy : enemies_) {
+			enemy->Update();
+		}
+		//
+		cameraController_->Update();
+		//
 #ifdef _DEBUG
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		isDebugCameraActive_ = TRUE;
-	}
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+			isDebugCameraActive_ = TRUE;
+		}
 #endif
 
-	if (isDebugCameraActive_) {
-		debugCamera_->Update();
-		camera_.matView = debugCamera_->GetCamera().matView;
-		camera_.matProjection = debugCamera_->GetCamera().matProjection;
-		camera_.TransferMatrix();
-	} else {
-		camera_.matView = cameraController_->GetViewProjection().matView;
-		camera_.matProjection = cameraController_->GetViewProjection().matProjection;
-		camera_.TransferMatrix();
+		if (isDebugCameraActive_) {
+			debugCamera_->Update();
+			camera_.matView = debugCamera_->GetCamera().matView;
+			camera_.matProjection = debugCamera_->GetCamera().matProjection;
+			camera_.TransferMatrix();
+		} else {
+			camera_.matView = cameraController_->GetViewProjection().matView;
+			camera_.matProjection = cameraController_->GetViewProjection().matProjection;
+			camera_.TransferMatrix();
+		}
+		//
+		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+				if (!worldTransformBlock)
+					continue;
+
+				worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
+				worldTransformBlock->TransferMatrix();
+			}
+		}
+		//
+		CheckAllCollison();
+		//
+		ChangePhase();
+		//
+		break;
+	case Phase::kDeath:
+		//
+		skydome_->Update();
+		//
+		for (Enemy* enemy : enemies_) {
+			enemy->Update();
+		}
+		//
+		if (deathParticles_ != nullptr) {
+
+			deathParticles_->Update();
+		}
+		//
+		cameraController_->Update();
+		//
+#ifdef _DEBUG
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+			isDebugCameraActive_ = TRUE;
+		}
+#endif
+
+		if (isDebugCameraActive_) {
+			debugCamera_->Update();
+			camera_.matView = debugCamera_->GetCamera().matView;
+			camera_.matProjection = debugCamera_->GetCamera().matProjection;
+			camera_.TransferMatrix();
+		} else {
+			camera_.matView = cameraController_->GetViewProjection().matView;
+			camera_.matProjection = cameraController_->GetViewProjection().matProjection;
+			camera_.TransferMatrix();
+		}
+		//
+		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+				if (!worldTransformBlock)
+					continue;
+
+				worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
+				worldTransformBlock->TransferMatrix();
+			}
+		}
+		//
+		ChangePhase();
+		break;
 	}
 }
 

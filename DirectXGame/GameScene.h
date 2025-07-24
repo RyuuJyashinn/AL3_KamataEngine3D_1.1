@@ -29,6 +29,7 @@ public:
 		kDeath,
 	};
 	Phase phase_;
+	void ChangePhase();
 
 private:
 	bool isDebugCameraActive_ = false;

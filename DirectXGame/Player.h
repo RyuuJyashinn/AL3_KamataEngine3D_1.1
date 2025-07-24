@@ -54,6 +54,7 @@ public:
 	Vector3 GetWorldPosition();
 	AABB GetAABB();
 	void OnCollision(const Enemy* enemy);
+	bool IsDead() const { return isDead_; }
 
 private:
 	WorldTransform worldTransform_;
@@ -83,4 +84,5 @@ private:
 	static inline const float kAttenuationWall = 0.2f;
 
 	  bool jumpKeyPressed_ = false;
+	bool isDead_ = false;
 };
