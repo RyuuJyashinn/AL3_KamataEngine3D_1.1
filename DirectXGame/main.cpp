@@ -5,6 +5,7 @@
 using namespace KamataEngine;
 
 
+
 enum class Scene {
 	kUnknown=0,
 	kTitle,
@@ -12,32 +13,41 @@ enum class Scene {
 
 
 };
+Scene scene = Scene::kTitle;
+GameScene* gameScene = nullptr;
+TitleScene* titleScene = nullptr;
 
-void ChangeScene(Scene& scene, GameScene*& gameScene, TitleScene*& titleScene) {
+void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitle:
 		if (titleScene && titleScene->IsFinished()) {
-			delete titleScene;
-			titleScene = nullptr;
-			gameScene = new GameScene;
-			gameScene->Initialize();
+			delete titleScene; 
+			GameScene* newGameScene = new GameScene();
+			newGameScene->Initialize();
+
+			gameScene = newGameScene;
+			titleScene = nullptr;    
 			scene = Scene::kGame;
 		}
 		break;
+
 	case Scene::kGame:
+
 		if (gameScene && gameScene->IsFinished()) {
 			delete gameScene;
+
+			TitleScene* newTitleScene = new TitleScene();
+			newTitleScene->Initialize();
+
+			titleScene = newTitleScene;
 			gameScene = nullptr;
-			titleScene = new TitleScene;
-			titleScene->Initialize();
 			scene = Scene::kTitle;
 		}
 		break;
 	}
 }
 
-
-void Update(Scene& scene, GameScene*& gameScene, TitleScene*& titleScene) {
+void UpdateScene() {
 
 	switch (scene) {
 	case Scene::kTitle:
@@ -51,7 +61,7 @@ void Update(Scene& scene, GameScene*& gameScene, TitleScene*& titleScene) {
 
 
 
-void Draw(Scene& scene, GameScene*& gameScene, TitleScene*& titleScene) {
+void DrawScene() {
 
 	switch (scene) {
 	case Scene::kTitle:
@@ -73,12 +83,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//DXInstance取得
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	//ケ-ムシ-ンのインスタンス生成
-	
-	GameScene* gameScene = nullptr;
-	TitleScene* titleScene = nullptr; 
+	// 
 	// ケ-ムシ-ンのインスタンス初期化
 	
-	Scene scene = Scene::kTitle;
+	
 	while (true) {
 	// 更新开始
 	//监测面板开始
@@ -88,9 +96,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		break;
 	    }
 
-	ChangeScene(scene, gameScene, titleScene);
+	ChangeScene();
 	//ケ-ムシ-ン更新
-	Update(scene, gameScene, titleScene);
+	UpdateScene();
 
     // 监测面板结束
 	imguiManager->End( );
@@ -99,7 +107,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 描画开始
 	dxCommon->PreDraw();
 	//ケ-ムシ-ン描画
-	Draw(scene, gameScene, titleScene);
+	DrawScene();
 
 
 	AxisIndicator::GetInstance()->Draw();
