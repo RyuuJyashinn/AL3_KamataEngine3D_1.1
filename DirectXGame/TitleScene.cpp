@@ -1,7 +1,8 @@
 #include "TitleScene.h"
 #include "KamataEngine.h"
 #include"MyMath.h"
-
+#include "MyMath.h"
+#include <numbers>
 using namespace KamataEngine;
 
 void TitleScene::Initialize() {
@@ -13,10 +14,31 @@ void TitleScene::Initialize() {
 	camera_.Initialize();
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
+	worldTransform_.scale_ = {2, 2, 2};
+	worldTransform_.translation_ = {0, 8, 0};
+
 	worldTransformPlayer_.Initialize();
+	worldTransformPlayer_.scale_ = {10, 10, 10};
+	worldTransformPlayer_.translation_ = {0, -8, 0};
+	worldTransformPlayer_.rotation_.y = std::numbers::pi_v<float>;
 }
 
 void TitleScene::Update() {
+	// アフィン変換行列の作成
+	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	// 行列を定数バッファに転送
+	worldTransform_.TransferMatrix();
+
+	// 回転
+	rotate += 0.1f;
+	worldTransformPlayer_.rotation_.y = sin(rotate) + std::numbers::pi_v<float>;
+
+	// アフィン変換行列の作成
+	worldTransformPlayer_.matWorld_ = MakeAffineMatrix(worldTransformPlayer_.scale_, worldTransformPlayer_.rotation_, worldTransformPlayer_.translation_);
+	// 行列を定数バッファに転送
+	worldTransformPlayer_.TransferMatrix();
+
+	// タイトルシーンの終了条件
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		finished_ = true;
 	}

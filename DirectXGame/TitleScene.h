@@ -19,5 +19,6 @@ public:
 
 private:
 	bool finished_ = false;
-	
+	// 回転
+	float rotate = 0.0f;
 };

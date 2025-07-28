@@ -13,7 +13,7 @@ enum class Scene {
 
 
 };
-Scene scene = Scene::kTitle;
+Scene scene = Scene::kUnknown;
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
 
@@ -85,7 +85,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//ケ-ムシ-ンのインスタンス生成
 	// 
 	// ケ-ムシ-ンのインスタンス初期化
-	
+	scene = Scene::kTitle;
+	titleScene = new TitleScene;
+	titleScene->Initialize();
 	
 	while (true) {
 	// 更新开始
