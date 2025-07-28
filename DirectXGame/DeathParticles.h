@@ -8,6 +8,7 @@ public:
 	void Initialize(Model* model, Camera* camera, const Vector3& position);
 	void Update();
 	void Draw(const Camera& camera);
+	bool IsFinished() const { return isFinished_; };
 
 private:
 	WorldTransform worldTransform_;

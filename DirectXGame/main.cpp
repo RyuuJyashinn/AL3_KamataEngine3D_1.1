@@ -4,7 +4,73 @@
 #include"TitleScene.h"
 using namespace KamataEngine;
 
-// Windowsアプリでのエントリーポイント(main関数)
+
+enum class Scene {
+	kUnknown=0,
+	kTitle,
+	kGame,
+
+
+};
+
+void ChangeScene(Scene scene, GameScene* gameScene,TitleScene* titleScene ) {
+	switch (scene) {
+	case Scene::kTitle:
+		if (titleScene->IsFinished()) {
+			// シーン変更
+			scene = Scene::kGame;
+			// 旧シーンの解放
+			delete titleScene;
+			titleScene = nullptr;
+			// 新シーンの生成と初期化
+			gameScene = new GameScene;
+			gameScene->Initialize();
+		}
+		break;
+	case Scene::kGame:
+		if (gameScene->IsFinished()) {
+			scene = Scene::kTitle;
+			// 旧シーンの解放
+			delete gameScene;
+			gameScene = nullptr;
+			// 新シーンの生成と初期化
+			titleScene = new TitleScene;
+			titleScene->Initialize();
+		}
+
+		break;
+	}
+
+
+}
+
+
+void Update(Scene scene, GameScene* gameScene, TitleScene* titleScene) {
+
+	switch (scene) {
+	case Scene::kTitle:
+		titleScene->Update();
+		break;
+	case Scene::kGame:
+		gameScene->Update();
+		break;
+	}
+}
+
+
+
+void Draw(Scene scene, GameScene* gameScene, TitleScene* titleScene) {
+
+	switch (scene) {
+	case Scene::kTitle:
+		titleScene->Draw();
+		break;
+	case Scene::kGame:
+		gameScene->Draw();
+		break;
+	}
+}
+    // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//Engine 初期化
 	KamataEngine::Initialize(L"GC2C_13_リュウ_ジャシン");
@@ -15,12 +81,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//DXInstance取得
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	//ケ-ムシ-ンのインスタンス生成
-	GameScene* gameScene = new GameScene();
+	
+	GameScene* gameScene = nullptr;
 	TitleScene* titleScene = nullptr; 
 	// ケ-ムシ-ンのインスタンス初期化
-	gameScene->Initialize();
-
-
+	
+	Scene scene = Scene::kTitle;
 	while (true) {
 	// 更新开始
 	//监测面板开始
@@ -29,8 +95,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	if (KamataEngine::Update()) {
 		break;
 	    }
+
+	ChangeScene(scene, gameScene, titleScene);
 	//ケ-ムシ-ン更新
-	gameScene->Update();
+	Update(scene, gameScene, titleScene);
+
     // 监测面板结束
 	imguiManager->End( );
 	//更新结束
@@ -38,15 +107,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 描画开始
 	dxCommon->PreDraw();
 	//ケ-ムシ-ン描画
-	gameScene->Draw();
+	Draw(scene, gameScene, titleScene);
+
+
 	AxisIndicator::GetInstance()->Draw();
 	//监测面板 画面
 	imguiManager->Draw();
 	// 描画终了
 	dxCommon->PostDraw();
 	}
-	delete gameScene;
-	gameScene = nullptr;
+	
     //Engine 终了
 	KamataEngine::Finalize();
 	return 0;

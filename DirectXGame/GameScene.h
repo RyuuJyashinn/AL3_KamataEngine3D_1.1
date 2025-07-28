@@ -30,6 +30,7 @@ public:
 	};
 	Phase phase_;
 	void ChangePhase();
+	bool IsFinished() const { return finished_; }
 
 private:
 	bool isDebugCameraActive_ = false;
@@ -50,4 +51,5 @@ private:
 	
 	DeathParticles* deathParticles_ = nullptr;
 	Model* modelDeath_ = nullptr;
+	bool finished_ = false;
 };
