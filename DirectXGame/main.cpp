@@ -13,39 +13,31 @@ enum class Scene {
 
 };
 
-void ChangeScene(Scene scene, GameScene* gameScene,TitleScene* titleScene ) {
+void ChangeScene(Scene& scene, GameScene*& gameScene, TitleScene*& titleScene) {
 	switch (scene) {
 	case Scene::kTitle:
-		if (titleScene->IsFinished()) {
-			// シーン変更
-			scene = Scene::kGame;
-			// 旧シーンの解放
+		if (titleScene && titleScene->IsFinished()) {
 			delete titleScene;
 			titleScene = nullptr;
-			// 新シーンの生成と初期化
 			gameScene = new GameScene;
 			gameScene->Initialize();
+			scene = Scene::kGame;
 		}
 		break;
 	case Scene::kGame:
-		if (gameScene->IsFinished()) {
-			scene = Scene::kTitle;
-			// 旧シーンの解放
+		if (gameScene && gameScene->IsFinished()) {
 			delete gameScene;
 			gameScene = nullptr;
-			// 新シーンの生成と初期化
 			titleScene = new TitleScene;
 			titleScene->Initialize();
+			scene = Scene::kTitle;
 		}
-
 		break;
 	}
-
-
 }
 
 
-void Update(Scene scene, GameScene* gameScene, TitleScene* titleScene) {
+void Update(Scene& scene, GameScene*& gameScene, TitleScene*& titleScene) {
 
 	switch (scene) {
 	case Scene::kTitle:
@@ -59,7 +51,7 @@ void Update(Scene scene, GameScene* gameScene, TitleScene* titleScene) {
 
 
 
-void Draw(Scene scene, GameScene* gameScene, TitleScene* titleScene) {
+void Draw(Scene& scene, GameScene*& gameScene, TitleScene*& titleScene) {
 
 	switch (scene) {
 	case Scene::kTitle:
