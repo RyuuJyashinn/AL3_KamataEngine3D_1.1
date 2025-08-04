@@ -4,6 +4,7 @@
 #include "MapChipField.h"
 #include "Player.h"      
 #include "SkyDome.h"     
+#include"Fade.h"
 class TitleScene {
 public:
 	void Initialize();
@@ -21,4 +22,5 @@ private:
 	bool finished_ = false;
 	// 回転
 	float rotate = 0.0f;
+	Fade* fade_ = nullptr;
 };

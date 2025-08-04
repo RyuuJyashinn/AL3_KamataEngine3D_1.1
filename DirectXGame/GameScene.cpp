@@ -111,7 +111,7 @@ void GameScene::ChangePhase() {
 
 
 void GameScene::Update() { 
-	
+
 	switch (phase_) {
 	case Phase::kPlay:
 		//
@@ -210,6 +210,7 @@ void GameScene::Update() {
 void GameScene::Draw() { 
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	Model::PreDraw(dxCommon->GetCommandList());
+
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {

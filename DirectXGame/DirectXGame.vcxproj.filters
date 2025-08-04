@@ -46,6 +46,9 @@
     <Filter Include="クラス\TitleScene">
       <UniqueIdentifier>{2d3150ce-cb0d-4f4a-86ea-0b797005890a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="クラス\Fade">
+      <UniqueIdentifier>{56612e30-15e2-471c-8f63-78a9e7583b52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -77,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="TitleScene.cpp">
       <Filter>クラス\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Fade.cpp">
+      <Filter>クラス\Fade</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +161,9 @@
     </ClInclude>
     <ClInclude Include="TitleScene.h">
       <Filter>クラス\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Fade.h">
+      <Filter>クラス\Fade</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

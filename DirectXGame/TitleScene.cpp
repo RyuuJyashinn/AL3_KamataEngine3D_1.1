@@ -12,6 +12,12 @@ void TitleScene::Initialize() {
 	// カメラの初期化
 
 	camera_.Initialize();
+
+
+
+	fade_ = new Fade();
+	fade_->Initialize();
+	fade_->Start(Fade::Status::FadeIn, 3.0f);
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
 	worldTransform_.scale_ = {2, 2, 2};
@@ -28,7 +34,7 @@ void TitleScene::Update() {
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
-
+	fade_->Update();
 	// 回転
 	rotate += 0.1f;
 	worldTransformPlayer_.rotation_.y = sin(rotate) + std::numbers::pi_v<float>;
@@ -50,6 +56,8 @@ void TitleScene::Draw() {
 	// 3Dモデル描画前処理
 	Model::PreDraw(dxCommon->GetCommandList());
 
+
+	fade_->Draw();
 	model_->Draw(worldTransform_, camera_);
 	modelPlayer_->Draw(worldTransformPlayer_, camera_);
 	// 3Dモデル描画後処理

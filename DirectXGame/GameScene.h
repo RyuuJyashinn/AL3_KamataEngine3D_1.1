@@ -7,7 +7,7 @@
 #include"MapChipField.h"
 #include"CameraController.h"
 #include"DeathParticles.h"
-
+#include"Fade.h"
 class GameScene {
 public:
 	KamataEngine::Sprite* sprite_ = nullptr;
@@ -52,4 +52,5 @@ private:
 	DeathParticles* deathParticles_ = nullptr;
 	Model* modelDeath_ = nullptr;
 	bool finished_ = false;
+
 };
