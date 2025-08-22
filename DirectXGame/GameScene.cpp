@@ -9,7 +9,7 @@ void GameScene::Initialize() {
 
 	modelBlock_ = Model::CreateFromOBJ("block");
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+	mapChipField_->LoadMapChipCsv("Resources/theMap.csv");
 
 	const uint32_t kNumBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
 	const uint32_t kNumBlockVirtical = mapChipField_->GetNumBlockVirual();
@@ -41,8 +41,8 @@ void GameScene::Initialize() {
 
 	player_ = new Player();
 	player_->setMapChipField(mapChipField_);//2.7
-	modelPlayer_ = Model::CreateFromOBJ("player");
-	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(1, 18);
+	modelPlayer_ = Model::CreateFromOBJ("block");
+	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(2, 16);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
 
 	// camera contro

@@ -17,7 +17,9 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 	worldTransform_.translation_ = position;
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 	camera_ = camera;
-
+	// 初始化左右变换矩阵
+	leftTransform_.Initialize();
+	rightTransform_.Initialize();
 }
 
 void Player::InputMove() {
@@ -417,7 +419,7 @@ void Player::Update() {
 
 
 	SoultionWhenTouchTop(collisionMapInfo);
-	SoultionWhenLanding(collisionMapInfo);
+	//SoultionWhenLanding(collisionMapInfo);
 	SoultionWhenWalling(collisionMapInfo);
 	// 应用修正后的移动量（不再叠加velocity_）
 
@@ -433,8 +435,29 @@ void Player::Update() {
 
 	
 void Player::Draw(const Camera& camera) {
-
+	// 绘制原始玩家
 	model_->Draw(worldTransform_, camera);
 
-}
 
+
+	// 16像素的偏移量（根据你的实际比例调整）
+	float pixelOffset = 1.0f; // 假设1单位=32像素，16像素=0.5单位
+
+	// 更新左变换矩阵
+	leftTransform_.translation_ = worldTransform_.translation_;
+	leftTransform_.translation_.x -= pixelOffset;
+	leftTransform_.rotation_ = worldTransform_.rotation_;
+	leftTransform_.scale_ = worldTransform_.scale_;
+	leftTransform_.matWorld_ = MakeAffineMatrix(leftTransform_.scale_, leftTransform_.rotation_, leftTransform_.translation_);
+	leftTransform_.TransferMatrix();
+	model_->Draw(leftTransform_, camera);
+
+	// 更新右变换矩阵
+	rightTransform_.translation_ = worldTransform_.translation_;
+	rightTransform_.translation_.x += pixelOffset;
+	rightTransform_.rotation_ = worldTransform_.rotation_;
+	rightTransform_.scale_ = worldTransform_.scale_;
+	rightTransform_.matWorld_ = MakeAffineMatrix(rightTransform_.scale_, rightTransform_.rotation_, rightTransform_.translation_);
+	rightTransform_.TransferMatrix();
+	model_->Draw(rightTransform_, camera);
+}

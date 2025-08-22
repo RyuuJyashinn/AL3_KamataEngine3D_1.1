@@ -47,9 +47,12 @@ public:
 	void SoultionWhenTouchTop(const CollisionMapInfo& info);
 	void SoultionWhenLanding(const CollisionMapInfo& info);
 	void SoultionWhenWalling(const CollisionMapInfo& info);
+	WorldTransform worldTransform_;
+	WorldTransform leftTransform_;
+	WorldTransform rightTransform_;
 
 private:
-	WorldTransform worldTransform_;
+
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0;
 	Camera* camera_ = nullptr;
