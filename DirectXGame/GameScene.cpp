@@ -69,6 +69,10 @@ void GameScene::Initialize() {
 	CameraController::Rect cameraArea = {10.0f, 100-12.0f ,5.0f,5.0f};
 	cameraController_->SetMovableArea(cameraArea);
 	//
+
+	fade_ = new Fade();
+	fade_->Initialize();
+	fade_->Start(Fade::Status::FadeIn, 1.0f);
 }
 
 void GameScene::CheckAllCollison() {
@@ -106,12 +110,27 @@ void GameScene::ChangePhase() {
 	case Phase::kDeath:
 	
 		break;
+	case Phase::kFadeIn:
+		if (fade_->IsFinished()) {
+			phase_=Phase::kPlay;
+		}
+		break;
+
+
+     case Phase::kFadeOut:
+		if (fade_->IsFinished()) {
+			 finished_ = true;
+		}
+		break;
 	}
-}
+
+	
+			
+    }
 
 
 void GameScene::Update() { 
-
+	fade_->Update();
 	switch (phase_) {
 	case Phase::kPlay:
 		//
@@ -170,7 +189,9 @@ void GameScene::Update() {
 			deathParticles_->Update();
 		}
 		if (deathParticles_ && deathParticles_->IsFinished()) {
-			finished_ = true;
+			//finished_ = true;
+			phase_ = Phase::kFadeOut;
+			fade_->Start(Fade::Status::FadeOut, 1.0f);
 		}
 		//
 		cameraController_->Update();
@@ -204,6 +225,14 @@ void GameScene::Update() {
 		//
 		ChangePhase();
 		break;
+	case Phase::kFadeIn:
+		fade_->Update();
+		ChangePhase();
+		break;
+	case Phase::kFadeOut:
+		fade_->Update();
+		ChangePhase();
+		break;
 	}
 }
 
@@ -221,9 +250,12 @@ void GameScene::Draw() {
 	}
 
 		skydome_->Draw(camera_);
-	if (player_->IsDead() != true) {
-		    player_->Draw(camera_);
+	if (phase_ == Phase::kPlay || phase_ == Phase::kFadeIn) {
+		    if (player_->IsDead() != true) {
+			    player_->Draw(camera_);
+		    }
 	}
+	
 	   
 
 	    if (deathParticles_ != nullptr) {
@@ -235,7 +267,7 @@ void GameScene::Draw() {
 	    }
 	Model::PostDraw();
 	  
-
+	fade_->Draw();
 }
 
 

@@ -12,6 +12,8 @@ public:
 
 	};
 	void Start(Status status, float duration);
+	void Stop();
+	bool IsFinished() const;
 
 private:
 	uint32_t textureHandle_ = 0;

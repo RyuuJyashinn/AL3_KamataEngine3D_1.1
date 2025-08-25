@@ -7,6 +7,10 @@
 #include"Fade.h"
 class TitleScene {
 public:
+	enum class Phase{
+		kFadeIn,kMain,kFadeOut,
+
+	};
 	void Initialize();
 	void Update();
 	void Draw();
@@ -18,9 +22,11 @@ public:
 	KamataEngine::WorldTransform worldTransformPlayer_;
 	KamataEngine::Camera camera_;
 
+
 private:
 	bool finished_ = false;
 	// 回転
 	float rotate = 0.0f;
 	Fade* fade_ = nullptr;
+	Phase phase_ = Phase::kFadeIn;
 };

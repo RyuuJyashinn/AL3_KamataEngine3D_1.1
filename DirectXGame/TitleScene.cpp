@@ -17,7 +17,7 @@ void TitleScene::Initialize() {
 
 	fade_ = new Fade();
 	fade_->Initialize();
-	fade_->Start(Fade::Status::FadeIn, 3.0f);
+	fade_->Start(Fade::Status::FadeIn, 1.0f);
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
 	worldTransform_.scale_ = {2, 2, 2};
@@ -30,12 +30,43 @@ void TitleScene::Initialize() {
 }
 
 void TitleScene::Update() {
+	
+
+	switch (phase_) { 
+	case Phase::kMain:
+		if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+			phase_ = Phase::kFadeOut;
+			fade_->Start(Fade::Status::FadeOut, 1.0f);
+		
+		}
+		break;
+	case Phase::kFadeIn:
+		fade_->Update();
+		if (fade_->IsFinished()) {
+			phase_ = Phase::kMain;
+		}
+		break;
+	case Phase::kFadeOut:
+		fade_->Update();
+		if (fade_->IsFinished()) {
+			finished_ = true;
+		}
+		break;
+
+	}
+
+	// タイトルシーンの終了条件
+	//if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+	//	finished_ = true;
+	//}
+
 	// アフィン変換行列の作成
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
-	fade_->Update();
-	// 回転
+
+	// fade_->Update();
+	//  回転
 	rotate += 0.1f;
 	worldTransformPlayer_.rotation_.y = sin(rotate) + std::numbers::pi_v<float>;
 
@@ -43,11 +74,6 @@ void TitleScene::Update() {
 	worldTransformPlayer_.matWorld_ = MakeAffineMatrix(worldTransformPlayer_.scale_, worldTransformPlayer_.rotation_, worldTransformPlayer_.translation_);
 	// 行列を定数バッファに転送
 	worldTransformPlayer_.TransferMatrix();
-
-	// タイトルシーンの終了条件
-	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
-		finished_ = true;
-	}
 }
 
 void TitleScene::Draw() {
@@ -57,9 +83,11 @@ void TitleScene::Draw() {
 	Model::PreDraw(dxCommon->GetCommandList());
 
 
-	fade_->Draw();
+
 	model_->Draw(worldTransform_, camera_);
 	modelPlayer_->Draw(worldTransformPlayer_, camera_);
+
 	// 3Dモデル描画後処理
 	Model::PostDraw();
+	fade_->Draw();
 }

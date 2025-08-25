@@ -25,8 +25,10 @@ public:
 	void CheckAllCollison();
 
 	enum class Phase {
+		kFadeIn,
 		kPlay,
 		kDeath,
+		kFadeOut,
 	};
 	Phase phase_;
 	void ChangePhase();
@@ -52,5 +54,5 @@ private:
 	DeathParticles* deathParticles_ = nullptr;
 	Model* modelDeath_ = nullptr;
 	bool finished_ = false;
-
+	Fade* fade_ = nullptr;
 };

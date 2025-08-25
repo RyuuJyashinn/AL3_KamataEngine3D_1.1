@@ -1,4 +1,4 @@
-#include"Fade.h"
+ #include"Fade.h"
 #include "KamataEngine.h"
 #include <algorithm>
 using namespace KamataEngine;
@@ -14,11 +14,37 @@ void Fade::Initialize() {
 void Fade::Start(Status status, float duration) {
 
 	status_ = status;
-	duration = duration;
+	duration_ = duration;
 	counter_ = 0.0f;
 
 }
 
+void Fade::Stop() { 
+	status_ = Status::None;
+}
+
+bool Fade::IsFinished() const {
+	switch (status_) { 
+	case Status::FadeIn:
+		if (counter_ >= duration_) {
+			return true;
+		} else {
+			return false;
+		}
+
+	case Status::FadeOut:
+		if (counter_ >= duration_) {
+			return true;
+		} else {
+			return false;
+		}
+
+
+
+	}
+	return true;
+
+}
 
 void Fade::Update() {
 
@@ -45,8 +71,12 @@ void Fade::Update() {
 	}
 }
 void Fade::Draw() {
-
-DirectXCommon* dxCommon = DirectXCommon::GetInstance();
+	if (status_ == Status::None) {
+	
+	return;
+	
+	}
+		DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	Sprite::PreDraw(dxCommon->GetCommandList());
 	sprite_->Draw();
 	Sprite::PostDraw();
