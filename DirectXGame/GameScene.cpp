@@ -44,7 +44,13 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::CreateFromOBJ("block");
 	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(2, 16);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
-
+	//ball
+	ball_ = new Ball();
+	ball_->SetMapChipField(mapChipField_);
+	ball_->SetPlayer(player_);
+	modelBall_ = Model::CreateFromOBJ("block");                 // 使用方块模型
+	Vector3 ballPosition = playerPostion + Vector3(0, 1.0f, 0); // 在玩家上方
+	ball_->Initialize(modelBall_, &camera_, ballPosition);
 	// camera contro
 	cameraController_ = new CameraController();
 	cameraController_->Initialize();
@@ -67,7 +73,21 @@ void GameScene::Update() {
 
 		}
 	}
+	//ball
+	if (Input::GetInstance()->TriggerKey(DIK_RETURN) && !ball_->IsLaunched()) {
+		Vector3 playerPosition = player_->GetWorldTransform().translation_;
 
+		Vector3 ballPosition = playerPosition + Vector3(0, 1.0f, 0); // 在玩家上方
+		ball_->Initialize(modelBall_, &camera_, ballPosition);
+		// 随机方向（向上偏左或偏右）
+		float randomAngle = (rand() % 2 == 0) ? 0.785f : -0.785f; // 45度或-45度
+		Vector3 launchDirection = Vector3(std::sin(randomAngle), std::cos(randomAngle), 0);
+		ball_->Launch(launchDirection);
+	}
+
+	ball_->Update();
+	ball_->CheckPlayerCollision(player_);
+	//
 	skydome_->Update();
 	player_->Update();
 	cameraController_->Update();
@@ -100,7 +120,7 @@ void GameScene::Draw() {
 			modelBlock_->Draw(*worldTransformBlock, camera_);
 		}
 	}
-
+	ball_->Draw(camera_);
 		skydome_->Draw(camera_);
 	    player_->Draw(camera_);
 

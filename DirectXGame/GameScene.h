@@ -5,6 +5,7 @@
 #include"SkyDome.h"
 #include"MapChipField.h"
 #include"CameraController.h"
+#include"Ball.h"
 class GameScene {
 public:
 	KamataEngine::Sprite* sprite_ = nullptr;
@@ -30,4 +31,7 @@ private:
 	SkyDome* skydome_ = nullptr;
 	MapChipField* mapChipField_;
 	CameraController* cameraController_ = nullptr;
+
+	Ball* ball_ = nullptr;
+	Model* modelBall_ = nullptr;
 };

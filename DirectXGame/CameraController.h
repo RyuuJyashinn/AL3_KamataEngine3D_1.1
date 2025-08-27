@@ -23,7 +23,7 @@ class CameraController {
 
 
 	private:
-	Vector3 targetOffset_ = {0, 0, -15.0f};
+	Vector3 targetOffset_ = {0, 0, -35.0f};
 	Vector3 targetOnset_;
 	Camera camera_;
     Player* target_ = nullptr;

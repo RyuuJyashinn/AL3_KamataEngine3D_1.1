@@ -50,6 +50,8 @@ public:
 	WorldTransform worldTransform_;
 	WorldTransform leftTransform_;
 	WorldTransform rightTransform_;
+	float GetWidth() const { return kWidth*3.0f; }
+	float GetHeight() const { return kHeight; }
 
 private:
 
