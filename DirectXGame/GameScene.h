@@ -23,7 +23,7 @@ public:
 		kTitle,
 	};
 	bool IsFinished() const { return finished_; }
-
+	void SetFinished(bool finished) { finished_ = finished; }
 
 private:
 	bool isDebugCameraActive_ = false;

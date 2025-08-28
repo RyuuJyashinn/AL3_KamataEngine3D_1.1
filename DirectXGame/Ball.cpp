@@ -196,6 +196,29 @@ Vector3 Ball::CornerPosition(const Vector3& center, Ball::Corner corner) {
 	return center + offsetTable[static_cast<uint32_t>(corner)];
 }
 
+bool Ball::CheckTargetCollision() {
+	if (!mapChipField_ || !isLaunched_)
+		return false;
+
+	// 检测球的四个角是否在目标区域
+	std::array<Vector3, static_cast<uint32_t>(Ball::kNumCorner)> positions;
+	for (uint32_t i = 0; i < positions.size(); ++i) {
+		positions[i] = CornerPosition(worldTransform_.translation_, static_cast<Ball::Corner>(i));
+	}
+
+	// 检查每个角是否在目标区域
+	for (const auto& position : positions) {
+		MapChipField::IndexSet indexSet = mapChipField_->GetMapChipIndexSetByPosition(position);
+		MapChipType mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+
+		if (mapChipType == MapChipType::kTarget) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Ball::CheckPlayerCollision(Player* player) {
 	if (!player || !isLaunched_)
 		return;

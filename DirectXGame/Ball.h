@@ -18,6 +18,7 @@ public:
 	bool IsLaunched() const { return isLaunched_; }
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
 	void SetPlayer(Player* player) { player_ = player; }
+	bool CheckTargetCollision();
 
 private:
 	struct CollisionMapInfo {

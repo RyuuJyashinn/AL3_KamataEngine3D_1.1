@@ -121,6 +121,9 @@ void GameScene::Update() {
 
 	ball_->Update();
 	ball_->CheckPlayerCollision(player_);
+	if (ball_->CheckTargetCollision()) {
+		finished_ = true; // 触发游戏结束
+	}
 	//
 	skydome_->Update();
 	player_->Update();
