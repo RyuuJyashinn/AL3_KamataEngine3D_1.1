@@ -2,6 +2,7 @@
 #include "KamataEngine.h"
 #include"MapChipField.h"
 #include "Player.h"
+#include"assert.h"
 using namespace KamataEngine;
 
 class Ball {

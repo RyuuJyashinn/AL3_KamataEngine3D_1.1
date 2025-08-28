@@ -1,7 +1,7 @@
 #include"TitleScene.h"
 #include "KamataEngine.h"
 #include"MyMath.h"
-
+#include"assert.h"
 using namespace KamataEngine;
 
 void TitleScene::Initialize() {

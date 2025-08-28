@@ -1,6 +1,7 @@
 #pragma once
 #include<vector> 
 #include"KamataEngine.h"
+#include"assert.h"
 using namespace KamataEngine;
 
 enum class MapChipType {

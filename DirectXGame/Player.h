@@ -1,6 +1,7 @@
 #pragma once
 #include "KamataEngine.h"
 #include"MapChipField.h"
+#include"assert.h"
 using namespace KamataEngine;
 enum class LRDirection {
 	kRight,
