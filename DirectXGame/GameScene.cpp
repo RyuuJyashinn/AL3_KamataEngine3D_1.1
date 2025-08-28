@@ -7,7 +7,7 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	camera_.Initialize();
 
-	modelBlock_ = Model::CreateFromOBJ("block");
+	modelBlock_ = Model::CreateFromOBJ("redblock");
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/theMap.csv");
 
