@@ -6,10 +6,13 @@ using namespace KamataEngine;
 void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	camera_.Initialize();
-
+	//
 	modelBlock_ = Model::CreateFromOBJ("blackblock");
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/theMap.csv");
+	//
+	modelTarget_ = Model::CreateFromOBJ("redblock");
+
 
 	const uint32_t kNumBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
 	const uint32_t kNumBlockVirtical = mapChipField_->GetNumBlockVirual();
@@ -32,6 +35,17 @@ void GameScene::Initialize() {
 		}
 	}
 
+	for (uint32_t y = 0; y < kNumBlockVirtical; ++y) {
+		for (uint32_t x = 0; x < kNumBlockHorizontal; ++x) {
+			if (mapChipField_->GetMapChipTypeByIndex(x, y) == MapChipType::kTarget) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				worldTransformBlocks_[y][x] = worldTransform;
+				worldTransformBlocks_[y][x]->translation_ = mapChipField_->GetMapChipPositionByIndex(x, y);
+			}
+		}
+	}
+
 	debugCamera_ = new DebugCamera(1280, 720);
 	PrimitiveDrawer::GetInstance()->SetCamera(&camera_);
 
@@ -41,7 +55,7 @@ void GameScene::Initialize() {
 
 	player_ = new Player();
 	player_->setMapChipField(mapChipField_);//2.7
-	modelPlayer_ = Model::CreateFromOBJ("block");
+	modelPlayer_ = Model::CreateFromOBJ("whiteblock");
 	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(10, 16);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
 	//ball
@@ -118,6 +132,7 @@ void GameScene::Draw() {
 			if (!worldTransformBlock)
 				continue;
 			modelBlock_->Draw(*worldTransformBlock, camera_);
+			modelTarget_->Draw(*worldTransformBlock, camera_);
 		}
 	}
 	ball_->Draw(camera_);

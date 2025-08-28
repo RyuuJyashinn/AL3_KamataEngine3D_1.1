@@ -30,6 +30,10 @@ private:
 	Model* modelPlayer_ = nullptr;
 	SkyDome* skydome_ = nullptr;
 	MapChipField* mapChipField_;
+
+	MapChipField* mapChipTarget_;
+	Model* modelTarget_ = nullptr;
+
 	CameraController* cameraController_ = nullptr;
 
 	Ball* ball_ = nullptr;
