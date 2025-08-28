@@ -14,11 +14,16 @@ public:
 	KamataEngine::Camera camera_;
 	KamataEngine::DebugCamera* debugCamera_ = nullptr;
 	float inputFloat3[3] = {0, 0, 0};
-
-	public:
 	void Initialize();
 	void Update();
 	void Draw();
+
+	enum class Phase {
+		kPlay,
+		kTitle,
+	};
+	bool IsFinished() const { return finished_; }
+
 
 private:
 	bool isDebugCameraActive_ = false;
@@ -39,4 +44,7 @@ private:
 
 	Ball* ball_ = nullptr;
 	Model* modelBall_ = nullptr;
+
+	Phase phase_;
+	bool finished_ = false;
 };

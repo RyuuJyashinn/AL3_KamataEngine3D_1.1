@@ -4,6 +4,8 @@
 
 using namespace KamataEngine;
 void GameScene::Initialize() {
+
+	//phase_ = Phase::kPlay;
 	worldTransform_.Initialize();
 	camera_.Initialize();
 	//
