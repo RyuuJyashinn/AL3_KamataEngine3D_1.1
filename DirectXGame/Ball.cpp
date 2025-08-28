@@ -85,6 +85,7 @@ void Ball::CheckMapCollisionBottom(CollisionMapInfo& info) {
 	}
 
 	MapChipType mapChipType;
+#define NOMINMAX
 	bool isHit = false;
 
 	// 左下角检测

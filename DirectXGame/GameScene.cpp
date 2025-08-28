@@ -42,7 +42,7 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	player_->setMapChipField(mapChipField_);//2.7
 	modelPlayer_ = Model::CreateFromOBJ("block");
-	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(2, 16);
+	Vector3 playerPostion = mapChipField_->GetMapChipPositionByIndex(10, 16);
 	player_->Initialize(modelPlayer_, &camera_, playerPostion);
 	//ball
 	ball_ = new Ball();
@@ -51,7 +51,7 @@ void GameScene::Initialize() {
 	modelBall_ = Model::CreateFromOBJ("block");                 // 使用方块模型
 	Vector3 ballPosition = playerPostion + Vector3(0, 1.0f, 0); // 在玩家上方
 	ball_->Initialize(modelBall_, &camera_, ballPosition);
-	// camera contro
+	// camera control
 	cameraController_ = new CameraController();
 	cameraController_->Initialize();
 	cameraController_->setTarget(player_);
