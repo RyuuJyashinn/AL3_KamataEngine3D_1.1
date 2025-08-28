@@ -7,22 +7,17 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	camera_.Initialize();
 	//
-	modelBlock_ = Model::CreateFromOBJ("blackblock");
-	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/theMap.csv");
-	//
-	modelTarget_ = Model::CreateFromOBJ("redblock");
-
-
 	const uint32_t kNumBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
 	const uint32_t kNumBlockVirtical = mapChipField_->GetNumBlockVirual();
 	worldTransformBlocks_.resize(kNumBlockVirtical);
-	
 
-
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+    for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
 	}
+
+	modelBlock_ = Model::CreateFromOBJ("blackblock");
+	mapChipField_ = new MapChipField;
+	mapChipField_->LoadMapChipCsv("Resources/theMap.csv");
 
 	for (uint32_t y = 0; y < kNumBlockVirtical; ++y) {
 		for (uint32_t x = 0; x < kNumBlockHorizontal; ++x) {
@@ -34,14 +29,26 @@ void GameScene::Initialize() {
 			}
 		}
 	}
+	//
+
+	worldTransformTarget_.resize(kNumBlockVirtical);
+
+	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+		worldTransformTarget_[i].resize(kNumBlockHorizontal);
+	}
+
+	modelTarget_ = Model::CreateFromOBJ("redblock");
+	mapChipTarget_=new MapChipField;
+	mapChipTarget_->LoadMapChipCsv("Resources/theMap.csv");
+
 
 	for (uint32_t y = 0; y < kNumBlockVirtical; ++y) {
 		for (uint32_t x = 0; x < kNumBlockHorizontal; ++x) {
-			if (mapChipField_->GetMapChipTypeByIndex(x, y) == MapChipType::kTarget) {
+			if (mapChipTarget_->GetMapChipTypeByIndex(x, y) == MapChipType::kTarget) {
 				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
-				worldTransformBlocks_[y][x] = worldTransform;
-				worldTransformBlocks_[y][x]->translation_ = mapChipField_->GetMapChipPositionByIndex(x, y);
+				worldTransformTarget_[y][x] = worldTransform;
+				worldTransformTarget_[y][x]->translation_ = mapChipTarget_->GetMapChipPositionByIndex(x, y);
 			}
 		}
 	}
@@ -62,7 +69,7 @@ void GameScene::Initialize() {
 	ball_ = new Ball();
 	ball_->SetMapChipField(mapChipField_);
 	ball_->SetPlayer(player_);
-	modelBall_ = Model::CreateFromOBJ("block");                 // 使用方块模型
+	modelBall_ = Model::CreateFromOBJ("ball");                 // 使用方块模型
 	Vector3 ballPosition = playerPostion + Vector3(0, 1.0f, 0); // 在玩家上方
 	ball_->Initialize(modelBall_, &camera_, ballPosition);
 	// camera control
@@ -85,6 +92,17 @@ void GameScene::Update() {
 			worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
 			worldTransformBlock->TransferMatrix();
 
+		}
+	}
+
+	
+	for (std::vector<WorldTransform*>& worldTransformTargetLine : worldTransformTarget_) {
+		for (WorldTransform* worldTransformTarget : worldTransformTargetLine) {
+			if (!worldTransformTarget)
+				continue;
+
+			worldTransformTarget->matWorld_ = MakeAffineMatrix(worldTransformTarget->scale_, worldTransformTarget->rotation_, worldTransformTarget->translation_);
+			worldTransformTarget->TransferMatrix();
 		}
 	}
 	//ball
@@ -132,7 +150,14 @@ void GameScene::Draw() {
 			if (!worldTransformBlock)
 				continue;
 			modelBlock_->Draw(*worldTransformBlock, camera_);
-			modelTarget_->Draw(*worldTransformBlock, camera_);
+		}
+	}
+
+		for (std::vector<WorldTransform*>& worldTransformTargetLine : worldTransformTarget_) {
+		for (WorldTransform* worldTransformTarget : worldTransformTargetLine) {
+			    if (!worldTransformTarget)
+				continue;
+			    modelTarget_->Draw(*worldTransformTarget, camera_);
 		}
 	}
 	ball_->Draw(camera_);

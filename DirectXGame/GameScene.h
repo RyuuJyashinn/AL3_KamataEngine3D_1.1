@@ -31,6 +31,7 @@ private:
 	SkyDome* skydome_ = nullptr;
 	MapChipField* mapChipField_;
 
+	std::vector<std::vector<WorldTransform*>> worldTransformTarget_;	
 	MapChipField* mapChipTarget_;
 	Model* modelTarget_ = nullptr;
 

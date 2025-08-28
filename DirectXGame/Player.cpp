@@ -72,17 +72,17 @@ void Player::InputMove() {
 
 		velocity_ += Vector3(0, kJumpAcceleration, 0);
 	}*/
-	bool upKeyPressed = Input::GetInstance()->PushKey(DIK_UP);
+	//bool upKeyPressed = Input::GetInstance()->PushKey(DIK_UP);
 
-	if (upKeyPressed) {
-		if (!jumpKeyPressed_ && onGround_) { // 只有首次按下且在地面时才跳跃
-			velocity_.y = kJumpAcceleration;
-			onGround_ = false;
-			jumpKeyPressed_ = true; // 标记按键已按下
-		}
-	} else {
-		jumpKeyPressed_ = false; // 按键松开时重置状态
-	}
+	//if (upKeyPressed) {
+	//	if (!jumpKeyPressed_ && onGround_) { // 只有首次按下且在地面时才跳跃
+	//		velocity_.y = kJumpAcceleration;
+	//		onGround_ = false;
+	//		jumpKeyPressed_ = true; // 标记按键已按下
+	//	}
+	//} else {
+	//	jumpKeyPressed_ = false; // 按键松开时重置状态
+	//}
 }
 
 void Player::CheckMapLanding() {
