@@ -228,13 +228,9 @@ void Ball::CheckPlayerCollision(Player* player) {
 		}
 	}
 }
-
 void Ball::Update() {
 	if (!isLaunched_)
 		return;
-
-	// 应用重力（如果需要）
-	// velocity_.y -= kGravity * (1.0f / 60.0f);
 
 	CollisionMapInfo collisionMapInfo;
 	collisionMapInfo.move = velocity_;
@@ -242,11 +238,12 @@ void Ball::Update() {
 	// 地图碰撞检测
 	CheckMapChipCollision(collisionMapInfo);
 
-	// 处理碰撞反弹
+	// 处理碰撞反弹（只允许一次反弹）
 	if (collisionMapInfo.ceiling || collisionMapInfo.landing) {
+		// 上或下的碰撞优先
 		velocity_.y = -velocity_.y * kBounceDamping;
-	}
-	if (collisionMapInfo.hitWall) {
+	} else if (collisionMapInfo.hitWall) {
+		// 如果没有上下碰撞，再处理左右
 		velocity_.x = -velocity_.x * kBounceDamping;
 	}
 
@@ -262,6 +259,40 @@ void Ball::Update() {
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
 }
+
+//void Ball::Update() {
+//	if (!isLaunched_)
+//		return;
+//
+//	// 应用重力（如果需要）
+//	// velocity_.y -= kGravity * (1.0f / 60.0f);
+//
+//	CollisionMapInfo collisionMapInfo;
+//	collisionMapInfo.move = velocity_;
+//
+//	// 地图碰撞检测
+//	CheckMapChipCollision(collisionMapInfo);
+//
+//	// 处理碰撞反弹
+//	if (collisionMapInfo.ceiling || collisionMapInfo.landing) {
+//		velocity_.y = -velocity_.y * kBounceDamping;
+//	}
+//	if (collisionMapInfo.hitWall) {
+//		velocity_.x = -velocity_.x * kBounceDamping;
+//	}
+//
+//	// 应用移动
+//	worldTransform_.translation_ += collisionMapInfo.move;
+//
+//	// 检查是否掉落到底部（游戏结束条件）
+//	if (worldTransform_.translation_.y < kDeathHeight) {
+//		Reset();
+//	}
+//
+//	// 更新世界变换
+//	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+//	worldTransform_.TransferMatrix();
+//}
 
 void Ball::Reset() {
 	isLaunched_ = false;
