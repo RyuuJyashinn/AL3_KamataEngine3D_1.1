@@ -6,7 +6,7 @@ using namespace KamataEngine;
 
 void TitleScene::Initialize() {
 
-	textureHandle_ = TextureManager::Load("uvChecker.png");
+	textureHandle_ = TextureManager::Load("title.png");
 	sprite_ = Sprite::Create(textureHandle_, {0, 0});
 
 
